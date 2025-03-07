@@ -28,14 +28,23 @@ resource "google_cloud_run_service" "app" {
   name     = var.app_name
   location = var.region
   project  = var.project_id
+  depends_on = [ mongodbatlas_cluster.pulzenmongocluster ]
 
   template {
     metadata {
       labels = var.project_labels
+      annotations = {
+        "autoscaling.knative.dev/minScale" = "1"
+        "autoscaling.knative.dev/maxScale" = "1"
+      }
     }
     spec {
       containers {
+        name = var.app_name
         image = var.container_image
+        ports {
+          container_port = 8080
+        }
 
         env {
           name  = "MONGODB"
@@ -51,6 +60,11 @@ resource "google_cloud_run_service" "app" {
         }
       }
     }
+  }
+
+  traffic {
+    percent         = 100
+    latest_revision = true
   }
 }
 
