@@ -16,12 +16,9 @@ terraform {
 }
 
 provider "google" {
-  project = "your-gcp-project-id"
-  region  = "us-central1"
 }
 
 provider "aws" {
-  region = "us-east-1" # Change as needed
 }
 
 provider "azurerm" {
