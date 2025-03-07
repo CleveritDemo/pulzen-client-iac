@@ -20,6 +20,7 @@ module "gcp" {
   mongodb_password = var.mongodb_password
   mongodb_username = var.mongodb_username
   mongodb_databse_tier = var.mongodb_databse_tier
+  mongodb_region = var.mongodb_region
 }
 
 module "azure" {

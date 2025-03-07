@@ -6,9 +6,23 @@ resource "mongodbatlas_project" "pulzenmongo" {
 resource "mongodbatlas_cluster" "pulzenmongocluster" {
   project_id   = mongodbatlas_project.pulzenmongo.id
   name         = var.db_name
+  cluster_type = "REPLICASET"
+
+  replication_specs {
+    num_shards = 1
+    regions_config {
+      region_name     = var.mongodb_region
+      electable_nodes = 3
+      priority        = 7
+      read_only_nodes = 0
+    }
+  }
+
+  cloud_backup                 = true
+  auto_scaling_disk_gb_enabled = true
+
+  # Provider Settings "block"
   provider_name = "GCP"
-  backing_provider_name = "GCP"
-  provider_region_name = var.region
   provider_instance_size_name = var.mongodb_databse_tier
 }
 
@@ -46,9 +60,16 @@ resource "google_cloud_run_service" "app" {
           container_port = 8080
         }
 
+        resources {
+          limits = {
+            "cpu" = "2"
+            "memory" = "4Gi"
+          }
+        }
+
         env {
           name  = "MONGODB"
-          value = mongodbatlas_cluster.pulzenmongocluster.connection_strings[0].standard_srv
+          value = "mongodb+srv://${var.mongodb_username}:${var.mongodb_password}@${replace(mongodbatlas_cluster.pulzenmongocluster.connection_strings[0].standard_srv, "mongodb+srv://", "")}/${var.db_name}?retryWrites=true&w=majority"
         }
 
         dynamic "env" {

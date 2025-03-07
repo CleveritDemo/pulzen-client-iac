@@ -63,3 +63,8 @@ variable "mongodb_databse_tier" {
   description = "MongoDB Database Tier"
   type        = string
 }
+
+variable "mongodb_region" {
+  description = "MongoDB Region"
+  type        = string
+}
