@@ -1,30 +1,45 @@
-provider "google" {
-  project = var.project_id
-  region  = var.region
+resource "mongodbatlas_project" "pulzenmongo" {
+  name   = var.app_name
+  org_id = var.mongodb_atlas_org_id
 }
 
-# Create MongoDB Atlas or Firestore with MongoDB compatibility
-resource "google_firestore_database" "mongo" {
-  project     = var.project_id
-  location_id = var.region
-  type        = "FIRESTORE_NATIVE"
-  name        = var.db_name
+resource "mongodbatlas_cluster" "pulzenmongocluster" {
+  project_id   = mongodbatlas_project.pulzenmongo.id
+  name         = var.db_name
+  provider_name = "GCP"
+  backing_provider_name = "GCP"
+  provider_region_name = var.region
+  provider_instance_size_name = var.mongodb_databse_tier
 }
 
-# Create Cloud Run Service
+resource "mongodbatlas_database_user" "pulzenmongouser" {
+  username    = var.mongodb_username
+  password    = var.mongodb_password
+  project_id  = mongodbatlas_project.pulzenmongo.id
+  auth_database_name = "admin"
+  
+  roles {
+    role_name     = "readWrite"
+    database_name = var.db_name
+  }
+}
+
 resource "google_cloud_run_service" "app" {
   name     = var.app_name
   location = var.region
   project  = var.project_id
 
   template {
+    metadata {
+      labels = var.project_labels
+    }
     spec {
       containers {
         image = var.container_image
 
         env {
-          name  = "MONGO_STRING"
-          value = "mongodb+srv://${google_firestore_database.mongo.name}.${var.project_id}.firebasedatabase.app"
+          name  = "MONGODB"
+          value = mongodbatlas_cluster.pulzenmongocluster.connection_strings[0].standard_srv
         }
 
         dynamic "env" {

@@ -1,8 +1,8 @@
 cloud_provider = "gcp"
 
-app_name        = "client-app"
+app_name        = "pulzen-gateway-client-runner"
 container_image = "pulzen/gateway:latest"
-db_name        = "clientdb"
+db_name        = "pulzen-gateway-client-db"
 location        = "us-central1"
 
 # Azure
@@ -11,31 +11,45 @@ resource_group  = "your-resource-group"
 # GCP
 project_id      = "your-gcp-project-id"
 
+# MongoDB
+mongodb_atlas_public_key = "your-m"
+mongodb_atlas_private_key = "your-p"
 
 env_vars = {
   AUTH_BASIC_PASSWORD   = "password"
   AUTH_BASIC_USERNAME   = "username"
   LICENSE_API_APP_KEY   = "license-key"
   PROFILES_DEFAULT      = "mongo,gitlab,github,ado"
-  MONGODB = "mongodb+srv://mongouri"
+
   COPILOT_ENTERPRISE = "my-enterprise"
   COPILOT_ORGANIZATION = "my-organization"
   COPILOT_TOKEN = "Bearer PUT-YOUR-TOKEN-HERE"
   COPILOT_METRICS_LEVEL = "enterprise|organization"
+
   GITHUB_TOKEN = "Bearer PUT-YOUR-TOKEN-HERE"
   GITHUB_WEBHOOK_SECRET = "PUT-YOUR-TOKEN-HERE"
   GITHUB_ORGANIZATION = "PUT-YOUR-TOKEN-HERE"
   GITHUB_ENTERPRISE = "PUT-YOUR-TOKEN-HERE"
+
   GITLAB_CLIENT_AUTHORIZATION = "Bearer PUT-YOUR-TOKEN-HERE"
+
   JIRA_URL = "https://your-jira-instance"
   JIRA_TOKEN = "PUT-YOUR-TOKEN-HERE"
   JIRA_USER = "YOUR-JIRA-USER"
   JIRA_CLIENT_ID = "YOUR-JIRA-CLIENT-ID"
   JIRA_CLIENT_SECRET = "YOUR-JIRA-CLIENT-SECRET"
   JIRA_CLIENT_CODE = "PUT-YOUR-TOKEN-HERE"
+
   BITBUCKET_WORKSPACE = "MY-WORKSPACE"
   BITBUCKET_CLIENT_ID = "PUT-YOUR"
   BITBUCKET_CLIENT_SECRET = "PUT-YOUR-TOKEN-HERE"
+  
   AZURE_DEVOPS_TOKEN = "PUT-YOUR-TOKEN-HERE"
   AZURE_DEVOPS_ORGANIZATION = "MY-ORGANIZATION"
+}
+
+project_labels = {
+  "provider" = "pulzen"
+  "cost-center" = "my-cost-center"
+  "environment" = "production"
 }

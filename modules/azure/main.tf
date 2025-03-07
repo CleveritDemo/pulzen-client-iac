@@ -1,7 +1,3 @@
-provider "azurerm" {
-  features {}
-}
-
 # Create Cosmos DB Account with MongoDB API
 resource "azurerm_cosmosdb_account" "mongo" {
   name                = "${var.app_name}-cosmosdb"
@@ -48,7 +44,6 @@ resource "azurerm_container_app_environment" "env" {
 resource "azurerm_container_app" "app" {
   name                       = var.app_name
   resource_group_name        = var.resource_group
-  location                   = var.location
   container_app_environment_id = azurerm_container_app_environment.env.id
   revision_mode              = "Single"
 
@@ -56,12 +51,12 @@ resource "azurerm_container_app" "app" {
     container {
       name   = var.app_name
       image  = var.container_image
-      cpu    = 0.5
-      memory = "1Gi"
+      cpu    = 2
+      memory = "2Gi"
 
       env {
-        name  = "MONGO_STRING"
-        value = data.azurerm_cosmosdb_account.mongo_data.connection_strings[0]
+        name  = "MONGODB"
+        value = azurerm_cosmosdb_account.mongo.primary_mongodb_connection_string
       }
 
       dynamic "env" {

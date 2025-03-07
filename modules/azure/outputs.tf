@@ -1,7 +1,8 @@
-output "mongo_connection_string" {
-  value = data.azurerm_cosmosdb_account.mongo_data.connection_strings[0]
+output "mongodb_connection_string" {
+  value = azurerm_cosmosdb_account.mongo.primary_mongodb_connection_string
+  sensitive = true
 }
 
-output "container_app_url" {
+output "app_url" {
   value = azurerm_container_app.app.latest_revision_fqdn
 }

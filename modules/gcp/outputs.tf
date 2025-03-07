@@ -1,7 +1,8 @@
-output "mongo_connection_string" {
-  value = "mongodb+srv://${google_firestore_database.mongo.name}.${var.project_id}.firebasedatabase.app"
+output "mongodb_connection_string" {
+  value = mongodbatlas_cluster.pulzenmongocluster.connection_strings[0].standard_srv
+  sensitive = true
 }
 
-output "cloud_run_url" {
+output "app_url" {
   value = google_cloud_run_service.app.status[0].url
 }
