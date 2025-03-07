@@ -33,7 +33,7 @@ aws configure
 az login
 ```
 
-> Second, make sure to have the required terraform script and the `client.tfvars` file updated with the required values.
+> Second, make sure to have the required terraform script and the `client.tfvars` file updated with the required values. You can find a template file for it in ./client.tfvars.template file, just copy it and update the values (deleting the .template part of the name).
 
 Third, run the following commands:
 
