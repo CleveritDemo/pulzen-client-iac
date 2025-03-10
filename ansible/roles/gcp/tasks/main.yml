@@ -1,0 +1,3 @@
+---
+- name: Run GCP CLI Tests
+  ansible.builtin.include_tasks: test_gcloud_cli.yml

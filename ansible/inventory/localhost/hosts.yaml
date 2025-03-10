@@ -1,0 +1,14 @@
+all:
+  children:
+    gcp:
+      hosts:
+        localhost:
+          ansible_connection: local
+    azure:
+      hosts:
+        localhost:
+          ansible_connection: local
+    aws:
+      hosts:
+        localhost:
+          ansible_connection: local

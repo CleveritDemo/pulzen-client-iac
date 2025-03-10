@@ -1,0 +1,17 @@
+- name: Check gcloud version
+  ansible.builtin.shell: gcloud --version
+  register: gcloud_version
+  changed_when: false
+
+- name: Display gcloud version
+  debug:
+    msg: "{{ gcloud_version.stdout_lines }}"
+
+- name: Check Current GCP Project
+  ansible.builtin.shell: gcloud config get-value project
+  register: gcp_project
+  changed_when: false
+
+- name: Display Current GCP Project
+  debug:
+    msg: "GCP Project to be used is: {{ gcp_project.stdout_lines }} !!!! All resouces will be created here!"

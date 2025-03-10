@@ -1,0 +1,3 @@
+---
+- name: Load terraform variables from base_variables.yaml
+  ansible.builtin.include_tasks: add_terraform_tfvars.yml

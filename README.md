@@ -1,74 +1,84 @@
-### Run terraform script
+# Ansible Deploy
 
-Client side script to provision the Pulsen client resources necesaary on the client side.
-
-## STATUS: **WIP**
-
-- GCP:
-  - Working with GCP + Atlas
-  - GCP + manual mongodb dtring: inProgress
-- Azure:
-  - Working with Azure + Atlas : pending
-  - Azure + manual mongodb dtring: pending
-- AWS:
-  - Working with AWS + Atlas : pending
-  - AWS + manual mongodb dtring: pending
+This is a simple ansible playbook to deploy a simple web application.
 
 ## Prerequisites
 
+- Ansible
 - Terraform
 - Cloud Cli (one of the following is required)
-  - AWS CLI
-  - gcloud CLI
-  - Azure CLI
-- update the `client.tfvars` file with the required values
+  - [gcloud CLI (Initialized and with the desired project selected)](https://cloud.google.com/sdk/docs/install)
+  - [Azure cli (Initialized and with the desired subscription selected)](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
+- copy/paste the ./base_variables.yaml.template to ./base_variables.yaml and update the values
+
+> NOTE: **ALL** the resouces will be created on the subscrition/project currently selected on the CLI for the logged in user. Make sure to have the correct subscription/project selected on you cloud cli.
+
+## Check/Install Ansible
+
+```bash
+ansible --version
+```
+
+If not installed, you can install it with the following command:
+
+```bash
+# Macos Brew
+brew install ansible
+
+# Ubuntu
+sudo apt update
+sudo apt install ansible
+```
+
+## Check/Install Terraform
+
+```bash
+terraform --version
+```
+
+If not installed, you can install it with the following command:
+
+```bash
+# Macos Brew
+brew install terraform
+
+# Ubuntu
+sudo apt update
+sudo apt install terraform
+```
 
 ## Steps
 
 First, init the cloud CLI with the required credentials and account to be used:
 
+```bash
 # GCP
-
-```bash
 gcloud auth application-default login
-```
-
-# AWS
-
-```bash
-aws configure
-```
 
 # Azure
-
-```bash
 az login
 ```
 
-> Second, make sure to have the required terraform script and the `client.tfvars` file updated with the required values. You can find a template file for it in ./client.tfvars.template file, just copy it and update the values (deleting the .template part of the name).
+Second, make sure to have the required terraform script and the `client.tfvars` file updated with the required values. You can find a template file for it in ./client.tfvars.template file, just copy it and update the values (deleting the .template part of the name).
 
-Third, run the following commands:
+# Ansible commands
 
-# Terraform commands
+## Deploying Pulzen App in GCP with Cloud run and Mongo Atlas as DB [Working] ✅:
 
 ```bash
-# Initialize the terraform: first time only
-terraform init
+# Deploy (Idempotent)(multiple runs will only update vars and regenerate db password)
+ansible-playbook playbooks/deploy_pulzen_mongoatlas_gcp.yml
+
+# Destroy All resources created above (is not reversible)
+ansible-playbook playbooks/destroy_pulzen_mongoatlas_gcp.yml
 ```
 
-```bash
-# Plan the terraform script: to see the changes without applying them
-terraform plan -var-file=client.tfvars -out=tfplan
-```
+## Deploying Pulzen App in GCP with self-hosted MongoDB [WIP] ❌:
 
 ```bash
-# Apply the terraform script: to apply the changes -> create the resources
-terraform apply tfplan
-```
+# Deploy (Idempotent)(multiple runs will only update vars and regenerate db password)
+ansible-playbook playbooks/deploy_pulzen_mongodb_gcp.yml
 
-## Destroy
-
-```bash
-# Destroy the resources
-terraform destroy -var-file=client.tfvars
+# Destroy All resources created above (is not reversible)
+ansible-playbook playbooks/destroy_pulzen_mongodb_gcp.yml
 ```

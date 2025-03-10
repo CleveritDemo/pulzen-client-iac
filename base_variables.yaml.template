@@ -1,0 +1,73 @@
+# ansible/group_vars/all.yaml
+cloud_provider: "gcp" # [gcp, aws, azure]
+
+app_name: "pulzen-gateway-client-runner" # Name of the application
+container_image: "pulzen/gateway:latest" # Container image to deploy
+location: "us-central1" # Cloud region/location
+
+# Database
+db_name: "pulzen-integration-db" # database name
+db_username: "pulzenworkeruser" # database username
+db_url: ""
+
+# Shared Environment Variables
+env_vars:
+  AUTH_BASIC_PASSWORD: "123"
+  AUTH_BASIC_USERNAME: "123"
+  LICENSE_API_APP_KEY: "your-pulzen-key"
+  PROFILES_DEFAULT: "mongo,gitlab,github,ado"
+
+  COPILOT_ENTERPRISE: ""
+  COPILOT_ORGANIZATION: ""
+  COPILOT_TOKEN: "Bearer CHANGE_ME"
+  COPILOT_METRICS_LEVEL: "enterprise|organization"
+  GITHUB_TOKEN: "Bearer CHANGE_ME"
+
+  GITHUB_WEBHOOK_SECRET: ""
+  GITHUB_ORGANIZATION: ""
+  GITHUB_ENTERPRISE: ""
+
+  GITLAB_CLIENT_AUTHORIZATION: "Bearer CHANGE_ME"
+
+  JIRA_URL: "https://your-jira-instance"
+  JIRA_TOKEN: "CHANGE_ME"
+  JIRA_USER: "CHANGE_ME"
+  JIRA_CLIENT_ID: "CHANGE_ME"
+  JIRA_CLIENT_SECRET: "CHANGE_ME"
+  JIRA_CLIENT_CODE: "CHANGE_ME"
+
+  BITBUCKET_WORKSPACE: "CHANGE_ME"
+  BITBUCKET_CLIENT_ID: "CHANGE_ME"
+  BITBUCKET_CLIENT_SECRET: "CHANGE_ME"
+
+  AZURE_DEVOPS_TOKEN: "CHANGE_ME"
+  AZURE_DEVOPS_ORGANIZATION: "CHANGE_ME"
+
+# Project Labels for cost tracking or identification
+project_labels:
+  provider: "pulzen"
+  cost_center: "better_future_area"
+  environment: "production"
+
+# Only fill with the desired Cloud prividers (if none set, ansible will not work)
+# (Selected cloud provider must match the values filled on the entirire file)
+
+# GCP only (Optional)
+
+# Azure only (Optional)
+
+# AWS only (Optional)
+
+# MongoDB Atlas only (Optional)
+mongodb_atlas_public_key: "CHANGE_ME"
+mongodb_atlas_private_key: "CHANGE_ME"
+mongodb_atlas_org_id: "CHANGE_ME"
+
+mongodb:
+  project_name: "pulzen-integration"
+  cluster_name: "pulzen-integration-cluster"
+  provider: "GCP" # [AWS, GCP, AZURE]
+  region: "EASTERN_US" # [us-east-1 (aws), EASTERN_US (gcp), eastus (azure)]
+  tier: "M10"
+  ip_whitelist:
+    - "0.0.0.0/0" # Allows access from anywhere (Not recommended for production)

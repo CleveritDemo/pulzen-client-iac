@@ -1,0 +1,13 @@
+# ansible/playbooks/test_gcloud_cli.yml
+- name: Run GCP Role
+  hosts: gcp
+  gather_facts: yes
+  vars_files:
+    - ../../base_variables.yaml
+  roles:
+    - gcp
+
+  tasks:
+    - name: Display MongoDB Atlas Configuration
+      debug:
+        msg: "App Name: {{ app_name }}, MongoDB Provider: {{ mongodb.provider }}"

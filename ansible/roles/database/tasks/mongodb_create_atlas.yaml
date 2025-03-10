@@ -1,0 +1,19 @@
+- name: Create MongoDB Atlas using GCP Marketplace
+  command: >
+    gcloud deployment-manager deployments create {{ cluster_name }}
+    --config=mongodb-atlas-config.yaml
+  register: deploy_result
+  changed_when: "'create' in deploy_result.stdout"
+
+- name: Get connection string for MongoDB
+  command: >
+    gcloud beta services connections describe
+    --name={{ cluster_name }}
+    --project={{ gcp_project }}
+    --format=json
+  register: mongo_connection
+  changed_when: false
+
+- name: Extract connection string
+  set_fact:
+    mongo_uri: "{{ mongo_connection.stdout | from_json | json_query('connectionString') }}"

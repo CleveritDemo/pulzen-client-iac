@@ -1,0 +1,66 @@
+# terraform/ansiblefeeded.tfvars
+cloud_provider = {{ cloud_provider | to_json }}
+
+app_name        = {{ app_name | to_json }}
+container_image = {{ container_image | to_json }}
+location        = {{ location | to_json }}
+
+# Database
+db_name         = {{ db_name | to_json }}
+db_username     = {{ db_username | to_json }}
+db_password     = {{ db_password.stdout | to_json }}
+db_url          = {{ db_url | to_json }}
+
+env_vars = {
+  AUTH_BASIC_PASSWORD = {{ env_vars.AUTH_BASIC_PASSWORD | to_json }}
+  AUTH_BASIC_USERNAME = {{ env_vars.AUTH_BASIC_USERNAME | to_json }}
+  LICENSE_API_APP_KEY = {{ env_vars.LICENSE_API_APP_KEY | to_json }}
+  PROFILES_DEFAULT    = {{ env_vars.PROFILES_DEFAULT | to_json }}
+
+  COPILOT_ENTERPRISE    = {{ env_vars.COPILOT_ENTERPRISE | to_json }}
+  COPILOT_ORGANIZATION  = {{ env_vars.COPILOT_ORGANIZATION | to_json }}
+  COPILOT_TOKEN         = {{ env_vars.COPILOT_TOKEN | to_json }}
+  COPILOT_METRICS_LEVEL = {{ env_vars.COPILOT_METRICS_LEVEL | to_json }}
+  GITHUB_TOKEN          = {{ env_vars.GITHUB_TOKEN | to_json }}
+
+  GITHUB_WEBHOOK_SECRET = {{ env_vars.GITHUB_WEBHOOK_SECRET | to_json }}
+  GITHUB_ORGANIZATION   = {{ env_vars.GITHUB_ORGANIZATION | to_json }}
+  GITHUB_ENTERPRISE     = {{ env_vars.GITHUB_ENTERPRISE | to_json }}
+
+  GITLAB_CLIENT_AUTHORIZATION = {{ env_vars.GITLAB_CLIENT_AUTHORIZATION | to_json }}
+
+  JIRA_URL           = {{ env_vars.JIRA_URL | to_json }}
+  JIRA_TOKEN         = {{ env_vars.JIRA_TOKEN | to_json }}
+  JIRA_USER          = {{ env_vars.JIRA_USER | to_json }}
+  JIRA_CLIENT_ID     = {{ env_vars.JIRA_CLIENT_ID | to_json }}
+  JIRA_CLIENT_SECRET = {{ env_vars.JIRA_CLIENT_SECRET | to_json }}
+  JIRA_CLIENT_CODE   = {{ env_vars.JIRA_CLIENT_CODE | to_json }}
+
+  BITBUCKET_WORKSPACE     = {{ env_vars.BITBUCKET_WORKSPACE | to_json }}
+  BITBUCKET_CLIENT_ID     = {{ env_vars.BITBUCKET_CLIENT_ID | to_json }}
+  BITBUCKET_CLIENT_SECRET = {{ env_vars.BITBUCKET_CLIENT_SECRET | to_json }}
+
+  AZURE_DEVOPS_TOKEN        = {{ env_vars.AZURE_DEVOPS_TOKEN | to_json }}
+  AZURE_DEVOPS_ORGANIZATION = {{ env_vars.AZURE_DEVOPS_ORGANIZATION | to_json }}
+}
+
+# Labels for the project, used for cost tracking
+project_labels = {
+  "provider"    = {{ project_labels.provider | to_json }}
+  "cost_center" = {{ project_labels.cost_center | to_json }}
+  "environment" = {{ project_labels.environment | to_json }}
+}
+
+# GCP only
+project_id = {{ gcp_project_id.stdout | default('') | to_json }}
+
+# Azure only
+
+# AWS only
+
+# MongoDB Atlas only
+mongodb_atlas_public_key  = {{ mongodb_atlas_public_key | default('') | to_json }}
+mongodb_atlas_private_key = {{ mongodb_atlas_private_key | default('') | to_json }}
+mongodb_atlas_org_id      = {{ mongodb_atlas_org_id | default('') | to_json }}
+mongodb_databse_tier      = {{ mongodb.tier | default('') | to_json }}
+mongodb_region            = {{ mongodb.region | default('') | to_json }}

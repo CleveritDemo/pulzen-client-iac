@@ -1,0 +1,13 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for /Users/diegopinto/Documents/GitHub/cleverit/pulzen/pulzen-client-iac/ansible/roles/database
+- name: Display MongoDB Atlas Configuration
+  debug:
+    msg:
+      - "Project: {{ mongodb.project_name }}"
+      - "Cluster: {{ mongodb.cluster_name }}"
+      - "Provider: {{ mongodb.provider }}"
+      - "Region: {{ mongodb.region }}"
+      - "Tier: {{ mongodb.tier }}"
+      - "Username: {{ mongodb.username }}"
+      - "Database: {{ mongodb.database_name }}"

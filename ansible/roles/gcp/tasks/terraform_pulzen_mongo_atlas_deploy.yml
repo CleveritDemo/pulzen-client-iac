@@ -1,0 +1,38 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for ansible/roles/gcp/tasks/terraform_pulzen_mongo_atlas_deploy.yml
+- name: Check if Terraform is initialized
+  ansible.builtin.stat:
+    path: ../../terraform/.terraform
+  register: terraform_initialized
+
+- name: Initialize Terraform if not already initialized
+  ansible.builtin.shell:
+    cmd: terraform init
+    chdir: ../../terraform
+  register: terraform_init
+  changed_when: false
+  when: not terraform_initialized.stat.exists
+
+- name: Fail if Terraform initialization failed
+  ansible.builtin.fail:
+    msg: "Terraform initialization failed."
+  when: not terraform_initialized.stat.exists
+
+- name: Apply Terraform configuration
+  ansible.builtin.shell:
+    cmd: terraform apply -auto-approve -var-file=ansiblefeeded.tfvars
+    chdir: ../../terraform
+  register: terraform_apply
+  changed_when: false
+
+- name: Get Terraform output
+  ansible.builtin.shell:
+    cmd: terraform output -json
+    chdir: ../../terraform
+  register: terraform_output
+  changed_when: false
+
+- name: Display Terraform output
+  debug:
+    msg: "{{ terraform_output.stdout }}"
