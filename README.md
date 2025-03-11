@@ -65,7 +65,7 @@ Second, make sure to have the required terraform script and the `client.tfvars` 
 
 # Ansible commands
 
-## GO to ansible folder in the terminal (following commands won't work if you are not in the ansible folder)
+## Go to ansible folder in the terminal (following commands won't work if you are not in the ansible folder)
 
 ```bash
 cd ansible
