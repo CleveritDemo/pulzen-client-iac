@@ -65,7 +65,7 @@ Second, make sure to have the required terraform script and the `client.tfvars` 
 
 # Ansible commands
 
-## Deploying Pulzen App in GCP with Cloud run and Mongo Atlas as DB [Working] ✅:
+## Deploying Pulzen App in GCP + Mongo Atlas as DB [Working] ✅:
 
 ```bash
 # Deploy (Idempotent)(multiple runs will only update vars and regenerate db password)
@@ -75,7 +75,7 @@ ansible-playbook playbooks/deploy_pulzen_mongoatlas_gcp.yml
 ansible-playbook playbooks/destroy_pulzen_mongoatlas_gcp.yml
 ```
 
-## Deploying Pulzen App in GCP with self-hosted MongoDB [WIP] ❌:
+## Deploying Pulzen App in GCP + self-hosted MongoDB as DB [WIP] ❌:
 
 ```bash
 # Deploy (Idempotent)(multiple runs will only update vars and regenerate db password)
@@ -85,7 +85,7 @@ ansible-playbook playbooks/deploy_pulzen_mongodb_gcp.yml
 ansible-playbook playbooks/destroy_pulzen_mongodb_gcp.yml
 ```
 
-## Deploying pulzen App in Azure with CosmosDB with mongo API [WIP] ❌:
+## Deploying pulzen App in Azure + CosmosDB with mongo API as DB [WIP] ❌:
 
 ```bash
 # Deploy (Idempotent)(multiple runs will only update vars and regenerate db password)
