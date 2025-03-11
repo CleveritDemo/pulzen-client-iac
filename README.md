@@ -11,7 +11,9 @@ This is a simple ansible playbook to deploy a simple web application.
   - [Azure cli (Initialized and with the desired subscription selected)](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
 - copy/paste the ./base_variables.yaml.template to ./base_variables.yaml and update the values
 
-> NOTE: **ALL** the resouces will be created on the subscrition/project currently selected on the CLI for the logged in user. Make sure to have the correct subscription/project selected on you cloud cli.
+> NOTE 1: **ALL** the resouces will be created on the subscrition/project currently selected on the CLI for the logged in user. Make sure to have the correct subscription/project selected on you cloud cli.
+
+> NOTE 2: Is vital to follow the instructions for the creation of the ./base_variables.yaml file, and the required values MUST be updated.
 
 ## Check/Install Ansible
 
