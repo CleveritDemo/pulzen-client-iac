@@ -82,3 +82,13 @@ ansible-playbook playbooks/deploy_pulzen_mongodb_gcp.yml
 # Destroy All resources created above (is not reversible)
 ansible-playbook playbooks/destroy_pulzen_mongodb_gcp.yml
 ```
+
+## Deploying pulzen App in Azure with CosmosDB with mongo API [WIP] ❌:
+
+```bash
+# Deploy (Idempotent)(multiple runs will only update vars and regenerate db password)
+ansible-playbook playbooks/deploy_pulzen_cosmosdb_azure.yml
+
+# Destroy All resources created above (is not reversible)
+ansible-playbook playbooks/destroy_pulzen_cosmosdb_azure.yml
+```
