@@ -1,6 +1,6 @@
-# Ansible Deploy
+# Pulzen gateway: Ansible + Terraform Deploy
 
-This is a simple ansible playbook to deploy a simple web application.
+This is the IaC deploy code for the Pulzen gateway on the client selected cloud provider.
 
 ## Prerequisites
 
