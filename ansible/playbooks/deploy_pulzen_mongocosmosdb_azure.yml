@@ -1,0 +1,13 @@
+# ansible/playbooks/test_gcloud_cli.yml
+- name: Deploy Pulzen App on AZURE with MongoDB Cosmosdb as Database
+  hosts: azure
+  gather_facts: yes
+  vars_files:
+    - ../../base_variables.yaml
+  roles:
+    - common
+    - azure
+
+  tasks:
+    - name: Use role Azure terraform task
+      ansible.builtin.include_tasks: ../roles/azure/tasks/terraform_pulzen_mongo_cosmosdb_deploy.yml

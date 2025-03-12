@@ -6,10 +6,10 @@ container_image = {{ container_image | to_json }}
 location        = {{ location | to_json }}
 
 # Database
-db_name         = {{ db_name | to_json }}
 db_username     = {{ db_username | to_json }}
 db_password     = {{ db_password.stdout | to_json }}
 db_url          = {{ db_url | to_json }}
+db_engine       = {{ db_engine | to_json }}
 
 env_vars = {
   AUTH_BASIC_PASSWORD = {{ env_vars.AUTH_BASIC_PASSWORD | to_json }}
@@ -55,6 +55,7 @@ project_labels = {
 project_id = {{ gcp_project_id.stdout | default('') | to_json }}
 
 # Azure only
+azure_subscription_id = {{ azure_subscription_id.stdout | default('') | to_json }}
 
 # AWS only
 

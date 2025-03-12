@@ -3,16 +3,6 @@ variable "app_name" {
   type        = string
 }
 
-variable "container_image" {
-  description = "Container image to deploy"
-  type        = string
-}
-
-variable "db_url" {
-  description = "Database URL"
-  type        = string
-}
-
 variable "db_username" {
   description = "Database Username"
   type        = string
@@ -21,32 +11,6 @@ variable "db_username" {
 variable "db_password" {
   description = "Database Password"
   type        = string
-}
-
-variable "db_engine" {
-  description = "Database Engine"
-  type        = string
-}
-
-variable "env_vars" {
-  description = "Environment variables for the application"
-  type        = map(string)
-}
-
-variable "region" {
-  description = "GCP region"
-  type        = string
-  default     = "us-central1"
-}
-
-variable "project_id" {
-  description = "GCP Project ID"
-  type        = string
-}
-
-variable "project_labels" {
-  description = "Labels for the project"
-  type        = map(string)
 }
 
 variable "mongodb_atlas_public_key" {

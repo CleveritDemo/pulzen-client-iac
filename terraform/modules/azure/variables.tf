@@ -8,8 +8,9 @@ variable "container_image" {
   type        = string
 }
 
-variable "db_name" {
-  description = "MongoDB database name"
+variable "db_engine" {
+  description = "Databse Engine"
+  default    = "cosmosdb"
   type        = string
 }
 

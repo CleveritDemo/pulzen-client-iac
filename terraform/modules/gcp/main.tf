@@ -1,48 +1,38 @@
-resource "mongodbatlas_project" "pulzenmongo" {
-  name   = var.app_name
-  org_id = var.mongodb_atlas_org_id
-}
+# Deploy atlas cluster
+module "mongodbatlas" {
+  source = "../mongodbatlas"
+  count  = var.db_engine == "mongodbatlas" ? 1 : 0
 
-resource "mongodbatlas_cluster" "pulzenmongocluster" {
-  project_id   = mongodbatlas_project.pulzenmongo.id
-  name         = var.db_name
-  cluster_type = "REPLICASET"
-
-  replication_specs {
-    num_shards = 1
-    regions_config {
-      region_name     = var.mongodb_region
-      electable_nodes = 3
-      priority        = 7
-      read_only_nodes = 0
-    }
+  providers = {
+    mongodbatlas  = mongodbatlas
   }
 
-  cloud_backup                 = true
-  auto_scaling_disk_gb_enabled = true
-
-  # Provider Settings "block"
-  provider_name = "GCP"
-  provider_instance_size_name = var.mongodb_databse_tier
+  app_name        = var.app_name
+  mongodb_atlas_org_id = var.mongodb_atlas_org_id
+  mongodb_atlas_public_key = var.mongodb_atlas_public_key
+  mongodb_atlas_private_key = var.mongodb_atlas_private_key
+  db_password = var.db_password
+  db_username = var.db_username
+  mongodb_databse_tier = var.mongodb_databse_tier
+  mongodb_region = var.mongodb_region
 }
 
-resource "mongodbatlas_database_user" "pulzenmongouser" {
-  username    = var.db_username
-  password    = var.db_password
-  project_id  = mongodbatlas_project.pulzenmongo.id
-  auth_database_name = "admin"
-  
-  roles {
-    role_name     = "readWrite"
-    database_name = var.db_name
-  }
+# Define db connection string for atlas or given connection_string (db_url)
+locals {
+  mongodb_connection_string = var.db_engine == "mongodbatlas" && length(module.mongodbatlas) > 0 ? module.mongodbatlas[0].mongodb_connection_string : var.db_url
 }
 
+# Define a list of active dependencies
+# locals {
+#   db_dependency = var.db_engine == "mongodbatlas" ? [module.mongodbatlas] : [module.mongodbatlas]
+# }
+
+# Deploy Cloud Run service
 resource "google_cloud_run_service" "app" {
   name     = var.app_name
   location = var.region
   project  = var.project_id
-  depends_on = [ mongodbatlas_cluster.pulzenmongocluster ]
+  depends_on = [module.mongodbatlas]
 
   template {
     metadata {
@@ -63,13 +53,13 @@ resource "google_cloud_run_service" "app" {
         resources {
           limits = {
             "cpu" = "2"
-            "memory" = "4Gi"
+            "memory" = "8Gi"
           }
         }
 
         env {
           name  = "MONGODB"
-          value = "mongodb+srv://${var.db_username}:${var.db_password}@${replace(mongodbatlas_cluster.pulzenmongocluster.connection_strings[0].standard_srv, "mongodb+srv://", "")}/${var.db_name}?retryWrites=true&w=majority"
+          value = local.mongodb_connection_string
         }
 
         dynamic "env" {
@@ -91,6 +81,8 @@ resource "google_cloud_run_service" "app" {
 
 # Make Cloud Run Public
 resource "google_cloud_run_service_iam_member" "public_access" {
+  depends_on = [ google_cloud_run_service.app ]
+
   service  = google_cloud_run_service.app.name
   location = google_cloud_run_service.app.location
   project  = google_cloud_run_service.app.project

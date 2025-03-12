@@ -18,8 +18,8 @@ variable "project_id" {
   type        = string
 }
 
-variable "db_name" {
-  description = "MongoDB database name"
+variable "db_engine" {
+  description = "Database Engine"
   type        = string
 }
 
@@ -77,4 +77,10 @@ variable "mongodb_databse_tier" {
 variable "mongodb_region" {
   description = "MongoDB Region"
   type        = string
+}
+
+variable "azure_subscription_id" {
+  description = "The Azure subscription ID"
+  type        = string
+  default     = ""  # Empty string as a default
 }

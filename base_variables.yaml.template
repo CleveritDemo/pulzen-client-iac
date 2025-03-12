@@ -1,14 +1,13 @@
 # ansible/group_vars/all.yaml
-cloud_provider: "gcp" # [gcp, aws, azure]
+cloud_provider: "azure" # [gcp, aws, azure]
 
 app_name: "pulzen-gateway-client-runner" # Name of the application
 container_image: "pulzen/gateway:latest" # Container image to deploy
-location: "us-central1" # Cloud region/location
-
+location: "eastus" # Cloud region/location (GCP = [us-central1, us-east1, us-west1] | Azure = [eastus, westus] | AWS = [us-east-1, us-west-1, us-west-2])
 # Database
-db_name: "pulzen-integration-db" # database name
 db_username: "pulzenworkeruser" # database username
 db_url: ""
+db_engine: "cosmosdb" # [GCP = [mongodbatlas, mongodbcommunity] | Azure = [cosmosdb] | AWS = [documentdb]]
 
 # Shared Environment Variables
 env_vars:

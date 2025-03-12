@@ -1,13 +1,13 @@
 # ansible/playbooks/test_gcloud_cli.yml
 - name: Deploy Pulzen App on GCP with MongoDB Atlas as Database
-  hosts: gcp
+  hosts: azure
   gather_facts: yes
   vars_files:
     - ../../base_variables.yaml
   roles:
     - common
-    - gcp
+    - azure
 
   tasks:
-    - name: Use role GCP task task1
+    - name: Use role Azure terraform task
       ansible.builtin.include_tasks: ../roles/gcp/tasks/terraform_pulzen_mongo_atlas_deploy.yml

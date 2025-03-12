@@ -58,7 +58,7 @@ terraform init
 
 ```bash
 # Plan the terraform script: to see the changes without applying them
-terraform plan -var-file=client.tfvars -out=tfplan
+terraform plan -var-file=ansiblefeeded.tfvars -out=tfplan
 ```
 
 ```bash
@@ -70,5 +70,5 @@ terraform apply tfplan
 
 ```bash
 # Destroy the resources
-terraform destroy -var-file=client.tfvars
+terraform destroy -var-file=ansiblefeeded.tfvars
 ```

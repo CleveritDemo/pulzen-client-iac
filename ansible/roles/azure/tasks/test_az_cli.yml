@@ -1,0 +1,64 @@
+- name: Ensure az CLI is installed
+  ansible.builtin.shell: command -v az
+  register: az_installed
+  ignore_errors: true
+  changed_when: false
+
+- name: Fail if az CLI is not installed
+  ansible.builtin.fail:
+    msg: |
+      Azure CLI (az) is not installed. 
+      Please install it from: https://aka.ms/installazurecli
+  when: az_installed.rc != 0
+
+- name: Check if user is logged into Azure
+  ansible.builtin.shell: az account show
+  register: az_login_status
+  ignore_errors: true
+  changed_when: false
+
+- name: Fail if user is not logged into Azure
+  ansible.builtin.fail:
+    msg: |
+      You are not logged into Azure. 
+      Please run the following command to log in:
+        az login
+  when: az_login_status.rc != 0
+
+- name: Display az CLI version
+  ansible.builtin.shell: az --version
+  register: az_version
+  changed_when: false
+
+- name: Show az CLI version
+  debug:
+    msg: "{{ az_version.stdout_lines }}"
+
+- name: Check Current Azure Subscription
+  ansible.builtin.shell: az account show --query "{subscriptionId:id, subscriptionName:name}" -o json
+  register: azure_subscription
+  changed_when: false
+
+- name: Display Current Azure Subscription
+  debug:
+    msg: "Azure Subscription to be used is: {{ azure_subscription.stdout }} !!!! All resources will be created here!"
+
+- name: Check if Microsoft.App is registered
+  ansible.builtin.shell: az provider show --namespace Microsoft.App --query "registrationState" -o tsv
+  register: microsoft_app_status
+  changed_when: false
+
+- name: Register Microsoft.App if not registered
+  ansible.builtin.shell: az provider register --namespace Microsoft.App
+  when: microsoft_app_status.stdout != "Registered"
+  changed_when: true
+
+- name: Check if Microsoft.Authorization is registered
+  ansible.builtin.shell: az provider show --namespace Microsoft.Authorization --query "registrationState" -o tsv
+  register: microsoft_authorization_status
+  changed_when: false
+
+- name: Register Microsoft.Authorization if not registered
+  ansible.builtin.shell: az provider register --namespace Microsoft.Authorization
+  when: microsoft_authorization_status.stdout != "Registered"
+  changed_when: true

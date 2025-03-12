@@ -9,7 +9,7 @@ module "gcp" {
 
   app_name        = var.app_name
   container_image = var.container_image
-  db_name         = var.db_name
+  db_engine       = var.db_engine
   env_vars        = var.env_vars
   project_id      = var.project_id
   region          = var.location
@@ -30,12 +30,12 @@ module "azure" {
 
   providers = {
     azurerm       = azurerm
-    mongodbatlas  = mongodbatlas
+    random        = random
   }
 
   app_name        = var.app_name
   container_image = var.container_image
-  db_name         = var.db_name
+  db_engine       = var.db_engine
   env_vars        = var.env_vars
   resource_group  = "${var.app_name}-rg"
   location        = var.location

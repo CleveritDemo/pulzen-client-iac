@@ -1,3 +1,4 @@
 #SPDX-License-Identifier: MIT-0
 ---
-# tasks file for /Users/diegopinto/Documents/GitHub/cleverit/pulzen/pulzen-client-iac/ansible/roles/azure
+- name: Run Az CLI Tests
+  ansible.builtin.include_tasks: test_az_cli.yml

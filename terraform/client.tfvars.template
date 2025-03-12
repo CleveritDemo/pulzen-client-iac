@@ -2,7 +2,6 @@ cloud_provider = "gcp" # [gcp, aws, azure]
 
 app_name        = "pulzen-gateway-client-runner" # Name of the application
 container_image = "pulzen/gateway:latest"               # Container image to deploy (do not change)
-db_name         = "pulzen-gateway-client-runner-test"   # MongoDB database name
 location        = "us-central1"                         # Cloud region/location to deploy services
 
 # Azure

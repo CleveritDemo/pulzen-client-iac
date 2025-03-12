@@ -15,6 +15,8 @@ This is a simple ansible playbook to deploy a simple web application.
 
 > NOTE 2: Is vital to follow the instructions for the creation of the ./base_variables.yaml file, and the required values MUST be updated.
 
+> NOTE 3: Make sure you have Owner or User Access Administrator role on the subscription/project you are going to deploy the resources (or the resource creation will fail).
+
 ## Check/Install Ansible
 
 ```bash
@@ -61,7 +63,13 @@ gcloud auth application-default login
 az login
 ```
 
-Second, make sure to have the required terraform script and the `client.tfvars` file updated with the required values. You can find a template file for it in ./client.tfvars.template file, just copy it and update the values (deleting the .template part of the name).
+### For MongoDB Atlas you will need API Key (public/private keys + org id)
+
+- [Create an API Key](https://www.mongodb.com/docs/atlas/configure-api-access-project/?msockid=1df97124b3fe669d314265e8b247677c#manage-programmatic-access-to-a-project)
+
+Second, make sure to have the copy/pasted and renamed the `base_variables.yaml` file and have it updated with the required values. You can find a template file for it in ./base_variables.yaml.template file, just copy it and update the values (deleting the .template part of the name).
+
+> **WARNING**: You should run only one deploy flavour at a time, as the resources created by one deploy flavour will conflict with the resources created by another deploy flavour. If you want to change from GCP to Azure or vice versa, you should destroy the resources created by the previous deploy flavour before running the new deploy flavour.
 
 # Ansible commands
 
@@ -71,7 +79,7 @@ Second, make sure to have the required terraform script and the `client.tfvars` 
 cd ansible
 ```
 
-## Deploying Pulzen App in GCP + Mongo Atlas as DB [Working] ✅:
+## Deploying Pulzen App in GCP + Mongo Atlas as DB ✅:
 
 ```bash
 # Deploy (Idempotent)(multiple runs will only update vars and regenerate db password)
@@ -79,6 +87,16 @@ ansible-playbook playbooks/deploy_pulzen_mongoatlas_gcp.yml
 
 # Destroy All resources created above (is not reversible)
 ansible-playbook playbooks/destroy_pulzen_mongoatlas_gcp.yml
+```
+
+## Deploying pulzen App in Azure + CosmosDB with mongo API as DB ✅:
+
+```bash
+# Deploy (Idempotent)(multiple runs will only update vars and regenerate db password)
+ansible-playbook playbooks/deploy_pulzen_mongocosmosdb_azure.yml
+
+# Destroy All resources created above (is not reversible)
+ansible-playbook playbooks/destroy_pulzen_mongocosmosdb_azure.yml
 ```
 
 ## Deploying Pulzen App in GCP + self-hosted MongoDB as DB [WIP] ❌:
@@ -89,14 +107,4 @@ ansible-playbook playbooks/deploy_pulzen_mongodb_gcp.yml
 
 # Destroy All resources created above (is not reversible)
 ansible-playbook playbooks/destroy_pulzen_mongodb_gcp.yml
-```
-
-## Deploying pulzen App in Azure + CosmosDB with mongo API as DB [WIP] ❌:
-
-```bash
-# Deploy (Idempotent)(multiple runs will only update vars and regenerate db password)
-ansible-playbook playbooks/deploy_pulzen_cosmosdb_azure.yml
-
-# Destroy All resources created above (is not reversible)
-ansible-playbook playbooks/destroy_pulzen_cosmosdb_azure.yml
 ```

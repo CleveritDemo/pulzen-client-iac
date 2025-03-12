@@ -1,0 +1,90 @@
+#SPDX-License-Identifier: MIT-0
+---
+- name: Initialize Terraform
+  ansible.builtin.shell:
+    cmd: terraform init
+    chdir: ../../terraform
+  register: terraform_init
+  changed_when: false
+
+- name: Fail if Terraform initialization failed
+  ansible.builtin.fail:
+    msg: "Terraform initialization failed."
+  when: terraform_init.rc != 0
+
+- name: Apply Terraform configuration
+  ansible.builtin.shell:
+    cmd: terraform apply -auto-approve -var-file=ansiblefeeded.tfvars
+    chdir: ../../terraform
+  register: terraform_apply
+  changed_when: false
+
+- name: Get Terraform output
+  ansible.builtin.shell:
+    cmd: terraform output -json
+    chdir: ../../terraform
+  register: terraform_output
+  changed_when: false
+
+- name: Parse Terraform output
+  set_fact:
+    terraform_output_parsed: "{{ terraform_output.stdout | from_json }}"
+
+- name: Parse Terraform output
+  set_fact:
+    terraform_output_parsed: "{{ terraform_output.stdout | from_json }}"
+
+- name: Display parsed Terraform output
+  debug:
+    msg: "{{ terraform_output_parsed }}"
+
+- name: Check if MongoDB user definition exists
+  command: >
+    az cosmosdb mongodb user definition show
+    --account-name {{ terraform_output_parsed.cosmosdb_account_name.value }}
+    --resource-group {{ terraform_output_parsed.cosmosdb_resource_group.value }}
+    --id "{{ terraform_output_parsed.cosmosdb_database_name.value }}.{{ db_username }}"
+  register: user_check
+  ignore_errors: yes
+
+- name: Create MongoDB user definition
+  command: >
+    az cosmosdb mongodb user definition create
+    --account-name {{ terraform_output_parsed.cosmosdb_account_name.value }}
+    --resource-group {{ terraform_output_parsed.cosmosdb_resource_group.value }}
+    --body '{
+      "Id": "{{ terraform_output_parsed.cosmosdb_database_name.value }}.{{ db_username }}",
+      "UserName": "{{ db_username }}",
+      "Password": "{{ db_password.stdout }}",
+      "DatabaseName": "{{ terraform_output_parsed.cosmosdb_database_name.value }}",
+      "CustomData": "Mechanisms",
+      "Mechanisms": "SCRAM-SHA-256",
+      "Roles": [
+        {
+          "Role": "readWrite",
+          "Db": "{{ terraform_output_parsed.cosmosdb_database_name.value }}"
+        }
+      ]
+    }'
+  when: user_check.rc != 0
+
+- name: Update MongoDB user definition
+  command: >
+    az cosmosdb mongodb user definition update
+    --account-name {{ terraform_output_parsed.cosmosdb_account_name.value }}
+    --resource-group {{ terraform_output_parsed.cosmosdb_resource_group.value }}
+    --body '{
+      "Id": "{{ terraform_output_parsed.cosmosdb_database_name.value }}.{{ db_username }}",
+      "UserName": "{{ db_username }}",
+      "Password": "{{ db_password.stdout }}",
+      "DatabaseName": "{{ terraform_output_parsed.cosmosdb_database_name.value }}",
+      "CustomData": "Mechanisms",
+      "Mechanisms": "SCRAM-SHA-256",
+      "Roles": [
+        {
+          "Role": "readWrite",
+          "Db": "{{ terraform_output_parsed.cosmosdb_database_name.value }}"
+        }
+      ]
+    }'
+  when: user_check.rc == 0
