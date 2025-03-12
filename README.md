@@ -108,3 +108,8 @@ ansible-playbook playbooks/deploy_pulzen_mongodb_gcp.yml
 # Destroy All resources created above (is not reversible)
 ansible-playbook playbooks/destroy_pulzen_mongodb_gcp.yml
 ```
+
+License
+This project is licensed under the Apache 2.0 License.
+
+
