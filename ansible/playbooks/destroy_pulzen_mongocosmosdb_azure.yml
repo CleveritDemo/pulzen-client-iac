@@ -10,4 +10,4 @@
 
   tasks:
     - name: Use role Azure terraform task
-      ansible.builtin.include_tasks: ../roles/gcp/tasks/terraform_pulzen_mongo_atlas_destroy.yml
+      ansible.builtin.include_tasks: ../roles/azure/tasks/terraform_pulzen_mongo_cosmosdb_destroy.yml
