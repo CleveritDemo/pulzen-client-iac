@@ -3,7 +3,7 @@ cloud_provider: "azure" # [gcp, aws, azure]
 
 app_name: "pulzen-gateway-client-runner" # Name of the application
 container_image: "pulzen/gateway:latest" # Container image to deploy
-location: "eastus" # Cloud region/location (GCP = [us-central1, us-east1, us-west1] | Azure = [eastus, westus] | AWS = [us-east-1, us-west-1, us-west-2])
+location: "westus" # Cloud region/location (GCP = [us-central1, us-east1, us-west1] | Azure = [eastus, westus] | AWS = [us-east-1, us-west-1, us-west-2])
 # Database
 db_username: "pulzenworkeruser" # database username
 db_url: ""

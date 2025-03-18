@@ -1,9 +1,9 @@
 #SPDX-License-Identifier: MIT-0
 ---
-- name: Desroy Terraform configuration
+- name: Destroy Terraform configuration
   ansible.builtin.shell:
     cmd: terraform destroy -auto-approve -var-file=ansiblefeeded.tfvars
-    chdir: ../../terraform
+    chdir: ../../terraform-azure
   register: terraform_destroy
   changed_when: false
 

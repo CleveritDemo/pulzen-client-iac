@@ -3,7 +3,7 @@
 - name: Initialize Terraform
   ansible.builtin.shell:
     cmd: terraform init
-    chdir: ../../terraform
+    chdir: ../../terraform-azure
   register: terraform_init
   changed_when: false
 
@@ -15,14 +15,14 @@
 - name: Apply Terraform configuration
   ansible.builtin.shell:
     cmd: terraform apply -auto-approve -var-file=ansiblefeeded.tfvars
-    chdir: ../../terraform
+    chdir: ../../terraform-azure
   register: terraform_apply
   changed_when: false
 
 - name: Get Terraform output
   ansible.builtin.shell:
     cmd: terraform output -json
-    chdir: ../../terraform
+    chdir: ../../terraform-azure
   register: terraform_output
   changed_when: false
 

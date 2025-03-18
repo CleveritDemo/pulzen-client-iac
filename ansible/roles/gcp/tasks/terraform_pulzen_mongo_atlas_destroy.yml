@@ -1,10 +1,10 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for ansible/roles/gcp/tasks/terraform_pulzen_mongo_atlas_destroy.yml
-- name: Desroy Terraform configuration
+- name: Destroy Terraform configuration
   ansible.builtin.shell:
     cmd: terraform destroy -auto-approve -var-file=ansiblefeeded.tfvars
-    chdir: ../../terraform
+    chdir: ../../terraform-gcp
   register: terraform_destroy
   changed_when: false
 
