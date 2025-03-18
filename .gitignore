@@ -1,2 +1,23 @@
+# Ignore variables template
 base_variables.yaml
+
+# Ignore scratch file
 SCRATCH.md
+
+# Add .terraform folders anywhere in the repo
+**/.terraform/*
+
+# add states and lock files anywhere in the repo
+**/*.tfstate
+**/*.tfstate.*
+**/*.tflock
+**/*.tfplan
+**/tfplan
+**/.terraform.lock.hcl
+
+# add ansiblefeeded.tfvars anywhere in the repo
+**/ansiblefeeded.tfvars
+**/client.tfvars
+
+# add .env files anywhere in the repo
+**.env
