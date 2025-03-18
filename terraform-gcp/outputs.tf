@@ -1,13 +1,9 @@
 output "app_url" {
-  value = var.cloud_provider == "gcp" ? module.gcp[0].app_url : (
-          var.cloud_provider == "azure" && var.db_engine == "cosmosdb" ? module.azure[0].app_url : ""
-          )
+  value = module.gcp[0].app_url
 }
 
 output "app_url_swagger" {
-  value = var.cloud_provider == "gcp" ? "${module.gcp[0].app_url}/swagger-ui/index.html" : (
-          var.cloud_provider == "azure" && var.db_engine == "cosmosdb" ? "${module.azure[0].app_url}/swagger-ui/index.html" : ""
-          )
+  value = "${module.gcp[0].app_url}/swagger-ui/index.html"
 }
 
 # Output the Cosmos DB Account Name from Azure module if db_engine is cosmosdb
