@@ -51,6 +51,10 @@ resource "azurerm_cosmosdb_account" "mongo" {
     name = "EnableMongoRoleBasedAccessControl"
   }
 
+  capabilities {
+    name = "EnableVCore"
+  }
+
   consistency_policy {
     consistency_level = "Session"
   }
