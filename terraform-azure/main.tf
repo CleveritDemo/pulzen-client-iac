@@ -19,6 +19,7 @@ module "azure" {
   mongodb_atlas_private_key = var.mongodb_atlas_private_key
   db_password = var.db_password
   db_username = var.db_username
+  cosmos_unique_postfix = var.cosmos_unique_postfix
   db_url = var.db_url
   mongodb_databse_tier = var.mongodb_databse_tier
 }

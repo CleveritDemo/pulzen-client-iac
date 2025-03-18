@@ -29,6 +29,11 @@ variable "db_password" {
   type        = string
 }
 
+variable "cosmos_unique_postfix" {
+  description = "Unique prefix for CosmosDB (to make it globally unique)"
+  type        = string
+}
+
 variable "env_vars" {
   description = "Environment variables for the application"
   type        = map(string)

@@ -56,6 +56,7 @@ project_id = {{ gcp_project_id.stdout | default('') | to_json }}
 
 # Azure only
 azure_subscription_id = {{ azure_subscription_id.stdout | default('') | to_json }}
+cosmos_unique_postfix = {{ cosmos_unique_postfix | default('') | to_json }}
 
 # AWS only
 
