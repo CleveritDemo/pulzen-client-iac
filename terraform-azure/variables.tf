@@ -23,6 +23,11 @@ variable "db_engine" {
   type        = string
 }
 
+variable "cosmos_unique_postfix" {
+  description = "Unique prefix for CosmosDB (to make it globally unique)"
+  type        = string
+}
+
 variable "db_url" {
   description = "Database URL"
   type        = string

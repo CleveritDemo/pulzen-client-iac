@@ -54,6 +54,7 @@ project_labels:
 # GCP only (Optional)
 
 # Azure only (Optional)
+cosmos_unique_postfix: "000001" # Unique postfix for cosmosdb name (see README.md for details)
 
 # AWS only (Optional)
 

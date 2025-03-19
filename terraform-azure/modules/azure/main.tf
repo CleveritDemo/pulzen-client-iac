@@ -31,7 +31,7 @@ resource "azurerm_subnet" "cosmosdb_subnet" {
 
 # Cosmos DB with Private Endpoint
 resource "azurerm_cosmosdb_account" "mongo" {
-  name                = "cosmosdb-${var.app_name}"
+  name                = "cosmosdb-${var.app_name}-${var.cosmos_unique_postfix}"
   location            = var.location
   resource_group_name = azurerm_resource_group.pulzen-rg.name
   offer_type          = "Standard"
@@ -76,8 +76,23 @@ resource "azurerm_cosmosdb_mongo_database" "mongo_db" {
   name = "${var.app_name}-db"
 
   autoscale_settings {
-    max_throughput = 4000
+    max_throughput = 15000
   }
+}
+
+# Retrieve the primary connection string for the Cosmos DB account
+data "azurerm_cosmosdb_account" "mongo" {
+  name                = azurerm_cosmosdb_account.mongo.name
+  resource_group_name = azurerm_resource_group.pulzen-rg.name
+}
+
+# Extract the username and password from the connection string
+locals {
+  cosmosdb_endpoint = data.azurerm_cosmosdb_account.mongo.endpoint
+  cosmosdb_primary_key = data.azurerm_cosmosdb_account.mongo.primary_key
+  cosmosdb_connection_string = "AccountEndpoint=${local.cosmosdb_endpoint};AccountKey=${local.cosmosdb_primary_key};"
+  cosmosdb_username          = regex("AccountEndpoint=https://(.*?);", local.cosmosdb_connection_string)[0]
+  cosmosdb_password          = regex("AccountKey=(.*?);", local.cosmosdb_connection_string)[0]
 }
 
 # Private Endpoint for CosmosDB
@@ -166,8 +181,12 @@ resource "azurerm_container_app" "app" {
 
       env {
         name  = "MONGODB"
-        value = "mongodb://${var.db_username}:${var.db_password}@${azurerm_cosmosdb_account.mongo.name}.mongo.cosmos.azure.com:10255/${azurerm_cosmosdb_mongo_database.mongo_db.name}?ssl=true&retrywrites=false&authSource=admin"
+        value = "mongodb://${local.cosmosdb_username}:${local.cosmosdb_password}@${azurerm_cosmosdb_account.mongo.name}.mongo.cosmos.azure.com:10255/${azurerm_cosmosdb_mongo_database.mongo_db.name}?ssl=true&retrywrites=false&authSource=admin"
+      }
 
+      env {
+        name = "SPRING_DATA_MONGODB_AUTO_INDEX_CREATION"
+        value = "true"
       }
 
       env {
@@ -176,7 +195,7 @@ resource "azurerm_container_app" "app" {
       }
     }
 
-    max_replicas = 1
+    max_replicas = 5
     min_replicas = 1
   }
 
