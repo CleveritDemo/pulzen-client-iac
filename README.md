@@ -91,7 +91,16 @@ ansible-playbook playbooks/destroy_pulzen_mongoatlas_gcp.yml
 
 ## Deploying pulzen App in Azure + CosmosDB with mongo API as DB ✅:
 
-> NOTE: Cosmos DB are globally unique accounts to the names needs to be unique. Please don't forget to change the value on the base_variables.yaml file "cosmos_unique_postfix" to a unique value.
+> [!IMPORTANT]  
+> Cosmos DB are globally unique accounts to the names needs to be unique. Please don't forget to change the value on the base_variables.yaml file "cosmos_unique_postfix" to a unique value.
+
+> [!TIP]
+> you can use this command to create the postfix
+> ```bash
+>  uuidgen | cut -c1-8 | tr '[:upper:]' '[:lower:]'
+>```
+> take in count the value should not be longer than 44 characters for  ```cosmosdb-${app_name}-${cosmos_unique_postfix}```
+ 
 ```bash
 # Deploy (Idempotent)(multiple runs will only update vars and regenerate db password)
 ansible-playbook playbooks/deploy_pulzen_mongocosmosdb_azure.yml
