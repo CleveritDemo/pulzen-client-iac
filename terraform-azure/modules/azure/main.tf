@@ -51,10 +51,6 @@ resource "azurerm_cosmosdb_account" "mongo" {
     name = "EnableMongoRoleBasedAccessControl"
   }
 
-  capabilities {
-    name = "EnableServerless"
-  }
-
   consistency_policy {
     consistency_level = "Session"
   }
