@@ -76,7 +76,7 @@ resource "azurerm_cosmosdb_mongo_database" "mongo_db" {
   name = "${var.app_name}-db"
 
   autoscale_settings {
-    max_throughput = 15000
+    max_throughput = 4000
   }
 }
 
@@ -187,11 +187,6 @@ resource "azurerm_container_app" "app" {
       env {
         name = "SPRING_DATA_MONGODB_AUTO_INDEX_CREATION"
         value = "true"
-      }
-
-      env {
-        name  = "DEBUG"
-        value = "false"
       }
     }
 
