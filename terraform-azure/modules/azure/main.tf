@@ -76,7 +76,7 @@ resource "azurerm_cosmosdb_mongo_database" "mongo_db" {
   name = "${var.app_name}-db"
 
   autoscale_settings {
-    max_throughput = 4000
+    max_throughput = 15000
   }
 }
 
@@ -182,6 +182,11 @@ resource "azurerm_container_app" "app" {
       env {
         name  = "MONGODB"
         value = "mongodb://${local.cosmosdb_username}:${local.cosmosdb_password}@${azurerm_cosmosdb_account.mongo.name}.mongo.cosmos.azure.com:10255/${azurerm_cosmosdb_mongo_database.mongo_db.name}?ssl=true&retrywrites=false&authSource=admin"
+      }
+
+      env {
+        name = "SPRING_DATA_MONGODB_AUTO_INDEX_CREATION"
+        value = "true"
       }
 
       env {
