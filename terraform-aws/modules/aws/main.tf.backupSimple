@@ -1,0 +1,154 @@
+resource "azurerm_resource_group" "pulzen-rg" {
+  name     = var.resource_group
+  location = var.location
+}
+
+# VNet with single subnet
+resource "azurerm_virtual_network" "vnet" {
+  name                = "${var.app_name}-vnet"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.pulzen-rg.name
+  address_space       = ["10.0.0.0/20"]
+}
+
+resource "azurerm_subnet" "container_subnet" {
+  name                 = "container-subnet"
+  resource_group_name  = azurerm_resource_group.pulzen-rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.0.0/23"]
+}
+
+# Cosmos DB with Public Access
+resource "azurerm_cosmosdb_account" "mongo" {
+  name                = "cosmosdb-${var.app_name}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.pulzen-rg.name
+  offer_type          = "Standard"
+  kind                = "MongoDB"
+  mongo_server_version = "4.2"
+  
+  capabilities {
+    name = "EnableAggregationPipeline"
+  }
+  capabilities {
+    name = "EnableMongo"
+  }
+  capabilities {
+    name = "EnableMongoRoleBasedAccessControl"
+  }
+
+  consistency_policy {
+    consistency_level = "Session"
+  }
+
+  geo_location {
+    location          = var.location
+    failover_priority = 0
+  }
+
+  public_network_access_enabled = true
+}
+
+# Create CosmosDB database
+resource "azurerm_cosmosdb_mongo_database" "mongo_db" {
+  account_name       = azurerm_cosmosdb_account.mongo.name
+  resource_group_name = azurerm_resource_group.pulzen-rg.name
+  name              = "${var.app_name}-db"
+
+  autoscale_settings {
+    max_throughput = 4000
+  }
+}
+
+# Retrieve the primary connection string for the Cosmos DB account
+data "azurerm_cosmosdb_account" "mongo" {
+  name                = azurerm_cosmosdb_account.mongo.name
+  resource_group_name = azurerm_resource_group.pulzen-rg.name
+}
+
+# Extract the username and password from the connection string
+locals {
+  cosmosdb_endpoint = data.azurerm_cosmosdb_account.mongo.endpoint
+  cosmosdb_primary_key = data.azurerm_cosmosdb_account.mongo.primary_key
+  cosmosdb_connection_string = "AccountEndpoint=${local.cosmosdb_endpoint};AccountKey=${local.cosmosdb_primary_key};"
+  cosmosdb_username          = regex("AccountEndpoint=https://(.*?);", local.cosmosdb_connection_string)[0]
+  cosmosdb_password          = regex("AccountKey=(.*?);", local.cosmosdb_connection_string)[0]
+}
+
+# Container App Environment
+resource "azurerm_container_app_environment" "env" {
+  name                = "${var.app_name}-env"
+  resource_group_name = azurerm_resource_group.pulzen-rg.name
+  location            = var.location
+  infrastructure_subnet_id = azurerm_subnet.container_subnet.id
+}
+
+# Managed Identity for Container App
+resource "azurerm_user_assigned_identity" "app_identity" {
+  name                = "${var.app_name}-identity"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.pulzen-rg.name
+}
+
+# Assign role to CosmosDB
+resource "azurerm_role_assignment" "cosmos_role" {
+  scope                = azurerm_cosmosdb_account.mongo.id
+  role_definition_name = "Owner"
+  principal_id         = azurerm_user_assigned_identity.app_identity.principal_id
+}
+
+# Container App with Public CosmosDB Connection
+resource "azurerm_container_app" "app" {
+  name                       = var.app_name
+  resource_group_name        = azurerm_resource_group.pulzen-rg.name
+  container_app_environment_id = azurerm_container_app_environment.env.id
+  revision_mode              = "Single"
+
+  identity {
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.app_identity.id]
+  }
+
+  template {
+    container {
+      name   = var.app_name
+      image  = var.container_image
+      cpu    = 2
+      memory = "4Gi"
+
+      dynamic "env" {
+        for_each = var.env_vars
+        content {
+          name  = env.key
+          value = env.value
+        }
+      }
+
+      env {
+        name  = "MONGODB"
+        value = "mongodb://${local.cosmosdb_username}:${local.cosmosdb_password}@${azurerm_cosmosdb_account.mongo.name}.mongo.cosmos.azure.com:10255/${azurerm_cosmosdb_mongo_database.mongo_db.name}?ssl=true&retrywrites=false&authSource=admin"
+      }
+
+      env {
+        name  = "DEBUG"
+        value = "false"
+      }
+    }
+
+    max_replicas = 5
+    min_replicas = 1
+  }
+
+  ingress {
+    external_enabled = true
+    target_port      = 8080
+    transport        = "http"
+
+    traffic_weight {
+      latest_revision = true
+      percentage      = 100
+    }
+  }
+
+  tags = var.project_labels
+}

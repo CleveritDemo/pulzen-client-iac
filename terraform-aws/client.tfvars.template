@@ -1,0 +1,60 @@
+cloud_provider = "gcp" # [gcp, aws, azure]
+
+app_name        = "pulzen-gateway-client-runner" # Name of the application
+container_image = "pulzen/gateway:latest"               # Container image to deploy (do not change)
+location        = "us-central1"                         # Cloud region/location to deploy services
+
+# Azure
+resource_group = "pulzen-gateway-client-rg" # Azure Resource Group (only for Azure)
+
+# GCP
+project_id = "yout_projcect_id" # GCP Project ID (only for GCP)
+
+# MongoDB
+mongodb_atlas_public_key  = "123"                             # MongoDB Atlas Public Key (get values from MongoDB Atlas)
+mongodb_atlas_private_key = "123" # MongoDB Atlas Private Key (get values from MongoDB Atlas)
+mongodb_atlas_org_id      = "123"             # MongoDB Atlas Organization ID (get values from MongoDB Atlas)
+mongodb_password          = "123"                     # MongoDB Password (change these values)
+mongodb_username          = "pulzenworkeruser"                     # MongoDB Username (change these values)
+mongodb_databse_tier      = "M10"                                  # MongoDB Database Tier
+mongodb_region            = "EASTERN_US"                           # MongoDB Region
+
+env_vars = {
+  AUTH_BASIC_PASSWORD = "123"        # Basic Auth Password
+  AUTH_BASIC_USERNAME = "123"            # Basic Auth Username 
+  LICENSE_API_APP_KEY = "your-pulzen-key"         # Pulzen License API Key
+  PROFILES_DEFAULT    = "mongo,gitlab,github,ado" # Default profiles
+
+  COPILOT_ENTERPRISE    = "my-enterprise"              # Copilot Enterprise (get from Copilot)
+  COPILOT_ORGANIZATION  = "my-organization"            # Copilot Organization (get from Copilot)
+  COPILOT_TOKEN         = "Bearer PUT-YOUR-TOKEN-HERE" # Copilot Token (get from Copilot)
+  COPILOT_METRICS_LEVEL = "enterprise|organization"    # Copilot Metrics Level
+  GITHUB_TOKEN          = "Bearer PUT-YOUR-TOKEN-HERE" # GitHub Token (get from GitHub)
+
+  GITHUB_WEBHOOK_SECRET = "PUT-YOUR-TOKEN-HERE" # GitHub Webhook Secret (get from GitHub)
+  GITHUB_ORGANIZATION   = "PUT-YOUR-TOKEN-HERE" # GitHub Organization (get from GitHub)
+  GITHUB_ENTERPRISE     = "PUT-YOUR-TOKEN-HERE" # GitHub Enterprise (get from GitHub)
+
+  GITLAB_CLIENT_AUTHORIZATION = "Bearer PUT-YOUR-TOKEN-HERE" # GitLab Client Authorization (get from GitLab)
+
+  JIRA_URL           = "https://your-jira-instance" # JIRA URL (get from JIRA)
+  JIRA_TOKEN         = "PUT-YOUR-TOKEN-HERE"        # JIRA Token (get from JIRA)
+  JIRA_USER          = "YOUR-JIRA-USER"             # JIRA User (get from JIRA)
+  JIRA_CLIENT_ID     = "YOUR-JIRA-CLIENT-ID"        # JIRA Client ID (get from JIRA)
+  JIRA_CLIENT_SECRET = "YOUR-JIRA-CLIENT-SECRET"    # JIRA Client Secret (get from JIRA)
+  JIRA_CLIENT_CODE   = "PUT-YOUR-TOKEN-HERE"        # JIRA Client Code (get from JIRA)
+
+  BITBUCKET_WORKSPACE     = "MY-WORKSPACE"        # Bitbucket Workspace (get from Bitbucket)
+  BITBUCKET_CLIENT_ID     = "PUT-YOUR"            # Bitbucket Client ID (get from Bitbucket)
+  BITBUCKET_CLIENT_SECRET = "PUT-YOUR-TOKEN-HERE" # Bitbucket Client Secret (get from Bitbucket)
+
+  AZURE_DEVOPS_TOKEN        = "PUT-YOUR-TOKEN-HERE" # Azure DevOps Token (get from Azure DevOps)
+  AZURE_DEVOPS_ORGANIZATION = "MY-ORGANIZATION"     # Azure DevOps Organization (get from Azure DevOps)
+}
+
+# Labels for the project, used for cost tracking
+project_labels = {
+  "provider"    = "pulzen"         # Provider
+  "cost-center" = "my-cost-center" # Cost Center
+  "environment" = "production"     # Environment
+}
