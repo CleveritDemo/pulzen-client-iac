@@ -5,14 +5,13 @@ Client side script to provision the Pulsen client resources necessary on the cli
 
 - GCP:
   - Working with GCP + Atlas
-  - GCP + manual mongodb dtring: inProgress
+  - GCP + manual mongodb string: inProgress
 - Azure:
   - Working with Azure + Atlas : pending
-  - Azure + manual mongodb dtring: pending
+  - Azure + manual mongodb string: pending
 - AWS:
   - Working with AWS + Atlas : pending
-  - AWS + manual mongodb dtring: pending
-
+  - AWS + manual mongodb string: pending
 ## Prerequisites
 
 - Terraform
