@@ -1,7 +1,6 @@
 ### Run terraform script
 
-Client side script to provision the Pulsen client resources necesaary on the client side.
-
+Client side script to provision the Pulsen client resources necessary on the client side.
 ## STATUS: **WIP**
 
 - GCP:
