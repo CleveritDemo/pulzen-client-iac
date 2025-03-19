@@ -88,11 +88,11 @@ data "azurerm_cosmosdb_account" "mongo" {
 
 # Extract the username and password from the connection string
 locals {
-  cosmosdb_endpoint = data.azurerm_cosmosdb_account.mongo.endpoint
-  cosmosdb_primary_key = data.azurerm_cosmosdb_account.mongo.primary_key
-  cosmosdb_connection_string = "AccountEndpoint=${local.cosmosdb_endpoint};AccountKey=${local.cosmosdb_primary_key};"
-  cosmosdb_username          = regex("AccountEndpoint=https://(.*?);", local.cosmosdb_connection_string)[0]
-  cosmosdb_password          = regex("AccountKey=(.*?);", local.cosmosdb_connection_string)[0]
+  cosmosdb_endpoint           = data.azurerm_cosmosdb_account.mongo.endpoint
+  cosmosdb_primary_key        = data.azurerm_cosmosdb_account.mongo.primary_key
+  cosmosdb_connection_string  = "AccountEndpoint=${local.cosmosdb_endpoint};AccountKey=${local.cosmosdb_primary_key};"
+  cosmosdb_username           = regex("AccountEndpoint=https://([^.]+)", local.cosmosdb_connection_string)[0]
+  cosmosdb_password           = regex("AccountKey=(.*?);", local.cosmosdb_connection_string)[0]
 }
 
 # Private Endpoint for CosmosDB
