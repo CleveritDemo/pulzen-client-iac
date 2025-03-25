@@ -163,6 +163,21 @@ resource "azurerm_container_app" "app" {
     identity_ids = [azurerm_user_assigned_identity.app_identity.id]
   }
 
+  # Predefined secrets
+  secret {
+    name  = "mongodb-connection"
+    value = "mongodb://${local.cosmosdb_username}:${local.cosmosdb_password}@${azurerm_cosmosdb_account.mongo.name}.mongo.cosmos.azure.com:10255/${azurerm_cosmosdb_mongo_database.mongo_db.name}?ssl=true&retrywrites=false&authSource=admin"
+  }
+
+  # Dynamically create secrets from var.env_vars
+  dynamic "secret" {
+    for_each = var.env_vars
+    content {
+      name  = lower(replace(secret.key, "_", "-"))
+      value = secret.value
+    }
+  }
+
   template {
     container {
       name   = var.app_name
@@ -171,17 +186,9 @@ resource "azurerm_container_app" "app" {
       memory = "4Gi"
 
       # Add environment variables from tfvars
-      dynamic "env" {
-        for_each = var.env_vars
-        content {
-          name  = env.key
-          value = env.value
-        }
-      }
-
       env {
         name  = "MONGODB"
-        value = "mongodb://${local.cosmosdb_username}:${local.cosmosdb_password}@${azurerm_cosmosdb_account.mongo.name}.mongo.cosmos.azure.com:10255/${azurerm_cosmosdb_mongo_database.mongo_db.name}?ssl=true&retrywrites=false&authSource=admin"
+        secret_name = "mongodb-connection"
       }
 
       env {
@@ -192,6 +199,14 @@ resource "azurerm_container_app" "app" {
       env {
         name  = "DEBUG"
         value = "false"
+      }
+
+      dynamic "env" {
+        for_each = var.env_vars
+        content {
+          name  = env.key
+          secret_name = "${lower(replace(env.key, "_", "-"))}"
+        }
       }
     }
 
