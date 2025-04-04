@@ -123,8 +123,7 @@ ansible-playbook playbooks/destroy_pulzen_mongodb_gcp.yml
 
 # Terraform commands
 
-> [!IMPORTANT] If Ansible is not an options, you can use Terraform to deploy the resources, but you will need to add some variables values by hand and be sure to have all necesary conditions for it to work (described earlier in this document).
-
+> [!IMPORTANT] If Ansible is not an option, you can use Terraform to deploy the resources, but you will need to add some variables values by hand and be sure to have all necessary conditions for it to work (described earlier in this document).
 ## Deploying pulzen App in Azure + CosmosDB with mongo API as DB ✅:
 
 > [!IMPORTANT]  
