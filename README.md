@@ -101,8 +101,7 @@ ansible-playbook playbooks/destroy_pulzen_mongoatlas_gcp.yml
 >  uuidgen | cut -c1-8 | tr '[:upper:]' '[:lower:]'
 > ```
 >
-> take in count the value should not be longer than 44 characters for `cosmosdb-${app_name}-${cosmos_unique_postfix}`
-
+> note that the value should not be longer than 44 characters for `cosmosdb-${app_name}-${cosmos_unique_postfix}`
 ```bash
 # Deploy (Idempotent)(multiple runs will only update vars and regenerate db password)
 ansible-playbook playbooks/deploy_pulzen_mongocosmosdb_azure.yml
