@@ -22,4 +22,7 @@ module "gcp" {
   db_url = var.db_url
   mongodb_databse_tier = var.mongodb_databse_tier
   mongodb_region = var.mongodb_region
+  vnet_cidr = var.vnet_cidr
+  container_subnet_cidr = var.container_subnet_cidr
+  db_subnet_cidr = var.db_subnet_cidr
 }

@@ -48,6 +48,11 @@ project_labels:
   cost_center: "better_future_area"
   environment: "production"
 
+# Networking
+vnet_cidr: "10.0.0.0/22"
+container_subnet_cidr: "10.0.0.0/23"
+db_subnet_cidr: "10.0.2.0/28"
+
 # Only fill with the desired Cloud prividers (if none set, ansible will not work)
 # (Selected cloud provider must match the values filled on the entirire file)
 

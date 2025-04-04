@@ -8,14 +8,14 @@ resource "azurerm_virtual_network" "vnet" {
   name                = "${var.app_name}-vnet"
   location            = var.location
   resource_group_name = azurerm_resource_group.pulzen-rg.name
-  address_space       = ["10.0.0.0/20"]
+  address_space       = [var.vnet_cidr]
 }
 
 resource "azurerm_subnet" "container_subnet" {
   name                 = "container-subnet"
   resource_group_name  = azurerm_resource_group.pulzen-rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.0.0/23"]
+  address_prefixes     = [var.container_subnet_cidr]
   depends_on = [ azurerm_virtual_network.vnet ]
 }
 
@@ -23,7 +23,7 @@ resource "azurerm_subnet" "cosmosdb_subnet" {
   name                 = "cosmosdb-subnet"
   resource_group_name  = azurerm_resource_group.pulzen-rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.2.0/24"]
+  address_prefixes     = [var.db_subnet_cidr]
   depends_on = [ azurerm_virtual_network.vnet ]
 
   service_endpoints = ["Microsoft.AzureCosmosDB"]
