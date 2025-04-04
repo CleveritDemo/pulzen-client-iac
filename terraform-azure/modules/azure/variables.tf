@@ -55,22 +55,25 @@ variable "project_labels" {
   type        = map(string)
 }
 
-variable "mongodb_atlas_public_key" {
-  description = "MongoDB Atlas Public Key"
-  type        = string
-}
-
-variable "mongodb_atlas_private_key" {
-  description = "MongoDB Atlas Private Key"
-  type        = string
-}
-
-variable "mongodb_atlas_org_id" {
-  description = "MongoDB Atlas Organization ID"
-  type        = string
-}
-
 variable "mongodb_databse_tier" {
   description = "MongoDB Database Tier"
   type        = string
+}
+
+variable "vnet_cidr" {
+  description = "value for the virtual network CIDR block"
+  type        = string  
+  default = "10.0.0.0/20"
+}
+
+variable "container_subnet_cidr" {
+  description = "value for the subnet CIDR block"
+  type        = string
+  default = "10.0.0.0/23"
+}
+
+variable "db_subnet_cidr" {
+  description = "value for the subnet CIDR block"
+  type        = string
+  default = "10.0.2.0/24"
 }

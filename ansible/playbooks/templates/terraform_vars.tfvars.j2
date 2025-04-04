@@ -51,6 +51,11 @@ project_labels = {
   "environment" = {{ project_labels.environment | to_json }}
 }
 
+# Networking
+vnet_cidr             = {{ vnet_cidr | default('') | to_json }}
+container_subnet_cidr = {{ container_subnet_cidr | default('') | to_json }}
+db_subnet_cidr        = {{ db_subnet_cidr | default('') | to_json }}
+
 # GCP only
 project_id = {{ gcp_project_id.stdout | default('') | to_json }}
 

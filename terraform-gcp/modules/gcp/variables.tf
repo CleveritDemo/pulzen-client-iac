@@ -73,3 +73,21 @@ variable "mongodb_region" {
   description = "MongoDB Region"
   type        = string
 }
+
+variable "vnet_cidr" {
+  description = "value for the virtual network CIDR block"
+  type        = string  
+  default = "10.0.0.0/20"
+}
+
+variable "container_subnet_cidr" {
+  description = "value for the subnet CIDR block"
+  type        = string
+  default = "10.0.0.0/23"
+}
+
+variable "db_subnet_cidr" {
+  description = "value for the subnet CIDR block"
+  type        = string
+  default = "10.0.2.0/24"
+}

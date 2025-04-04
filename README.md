@@ -96,11 +96,12 @@ ansible-playbook playbooks/destroy_pulzen_mongoatlas_gcp.yml
 
 > [!TIP]
 > you can use this command to create the postfix
+>
 > ```bash
 >  uuidgen | cut -c1-8 | tr '[:upper:]' '[:lower:]'
->```
-> take in count the value should not be longer than 44 characters for  ```cosmosdb-${app_name}-${cosmos_unique_postfix}```
- 
+> ```
+>
+> note that the value should not be longer than 44 characters for `cosmosdb-${app_name}-${cosmos_unique_postfix}`
 ```bash
 # Deploy (Idempotent)(multiple runs will only update vars and regenerate db password)
 ansible-playbook playbooks/deploy_pulzen_mongocosmosdb_azure.yml
@@ -119,5 +120,45 @@ ansible-playbook playbooks/deploy_pulzen_mongodb_gcp.yml
 ansible-playbook playbooks/destroy_pulzen_mongodb_gcp.yml
 ```
 
-License
+# Terraform commands
+
+> [!IMPORTANT] If Ansible is not an option, you can use Terraform to deploy the resources, but you will need to add some variables values by hand and be sure to have all necessary conditions for it to work (described earlier in this document).
+## Deploying pulzen App in Azure + CosmosDB with mongo API as DB ✅:
+
+> [!IMPORTANT]  
+> Cosmos DB are globally unique accounts to the names needs to be unique. Please don't forget to change the value on the base_variables.yaml file "cosmos_unique_postfix" to a unique value.
+
+> [!TIP]
+> you can use this command to create the postfix
+>
+> ```bash
+>  uuidgen | cut -c1-8 | tr '[:upper:]' '[:lower:]'
+> ```
+>
+> take in count the value should not be longer than 44 characters for `cosmosdb-${app_name}-${cosmos_unique_postfix}`
+
+```bash
+# Initialize the terraform: first time only
+terraform -chdir=terraform-azure init
+```
+
+```bash
+# Plan the terraform script: to see the changes without applying them
+terraform -chdir=terraform-azure plan -var-file=ansiblefeeded.tfvars -out=tfplan
+```
+
+```bash
+# Apply the terraform script: to apply the changes -> create the resources
+terraform -chdir=terraform-azure apply tfplan
+```
+
+## Destroy
+
+```bash
+# Destroy the resources
+terraform -chdir=terraform-azure destroy -var-file=ansiblefeeded.tfvars
+```
+
+## License
+
 This project is licensed under the Apache 2.0 License.

@@ -84,3 +84,21 @@ variable "azure_subscription_id" {
   type        = string
   default     = ""  # Empty string as a default
 }
+
+variable "vnet_cidr" {
+  description = "value for the virtual network CIDR block"
+  type        = string  
+  default = "10.0.0.0/20"
+}
+
+variable "container_subnet_cidr" {
+  description = "value for the subnet CIDR block"
+  type        = string
+  default = "10.0.0.0/23"
+}
+
+variable "db_subnet_cidr" {
+  description = "value for the subnet CIDR block"
+  type        = string
+  default = "10.0.2.0/24"
+}
