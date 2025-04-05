@@ -1,4 +1,4 @@
 output "app_url" {
-  value       = "https://${azurerm_container_app.app.latest_revision_fqdn}"
-  description = "The public URL of the container app"
+  value       = "${aws_lb.app_lb.dns_name}"
+  description = "URL of the application load balancer"
 }

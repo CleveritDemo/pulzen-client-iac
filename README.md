@@ -61,6 +61,9 @@ gcloud auth application-default login
 
 # Azure
 az login
+
+# AWS
+aws configure
 ```
 
 ### For MongoDB Atlas you will need API Key (public/private keys + org id)
@@ -102,6 +105,7 @@ ansible-playbook playbooks/destroy_pulzen_mongoatlas_gcp.yml
 > ```
 >
 > note that the value should not be longer than 44 characters for `cosmosdb-${app_name}-${cosmos_unique_postfix}`
+
 ```bash
 # Deploy (Idempotent)(multiple runs will only update vars and regenerate db password)
 ansible-playbook playbooks/deploy_pulzen_mongocosmosdb_azure.yml
@@ -123,6 +127,7 @@ ansible-playbook playbooks/destroy_pulzen_mongodb_gcp.yml
 # Terraform commands
 
 > [!IMPORTANT] If Ansible is not an option, you can use Terraform to deploy the resources, but you will need to add some variables values by hand and be sure to have all necessary conditions for it to work (described earlier in this document).
+
 ## Deploying pulzen App in Azure + CosmosDB with mongo API as DB ✅:
 
 > [!IMPORTANT]  
@@ -157,6 +162,28 @@ terraform -chdir=terraform-azure apply tfplan
 ```bash
 # Destroy the resources
 terraform -chdir=terraform-azure destroy -var-file=ansiblefeeded.tfvars
+```
+
+## Deploying Pulzen App in AWS + DynamoDB as DB [WIP] ❌:
+
+```bash
+# Initialize the terraform: first time only
+terraform -chdir=terraform-aws init
+```
+
+```bash
+# Plan the terraform script: to see the changes without applying them
+terraform -chdir=terraform-aws plan -var-file=ansiblefeeded.tfvars -out=tfplan
+```
+
+```bash
+# Apply the terraform script: to apply the changes -> create the resources
+terraform -chdir=terraform-aws apply tfplan
+```
+
+```bash
+# Destroy the resources
+terraform -chdir=terraform-aws destroy -var-file=ansiblefeeded.tfvars
 ```
 
 ## License
