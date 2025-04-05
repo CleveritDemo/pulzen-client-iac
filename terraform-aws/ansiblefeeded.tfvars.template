@@ -1,15 +1,15 @@
 # terraform/ansiblefeeded.tfvars
-cloud_provider = "azure"
+cloud_provider = "aws"
 
 app_name        = "pulzen-gateway-client-runner"
 container_image = "pulzen/gateway:latest"
-location        = "westus"
+location        = "us-east-2"
 
 # Database
 db_username = "pulzenworkeruser"
 db_password = "123"
 db_url      = ""
-db_engine   = "cosmosdb"
+db_engine   = "documentdb"
 
 env_vars = {
   AUTH_BASIC_PASSWORD = "123"

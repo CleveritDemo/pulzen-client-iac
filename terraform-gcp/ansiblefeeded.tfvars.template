@@ -64,6 +64,15 @@ azure_subscription_id = "123-123-123-123-123"
 cosmos_unique_postfix = "000001"
 
 # AWS only
+# AWS needs two subnets in different availability zones for the resource to be created
+# These will be used, not the ones provided above if AWS cloud provider is selected
+# Container Subnets (e.g., /27 = 32 IPs each, smallest usable size for ALB & Fargate)
+container_subnet_cidr_a = "10.0.0.0/27"
+container_subnet_cidr_b = "10.0.0.32/27"
+
+# DB Subnets (e.g., /28 = 16 IPs each, enough for DocumentDB)
+db_subnet_cidr_a = "10.0.0.64/28"
+db_subnet_cidr_b = "10.0.0.80/28"
 
 # MongoDB Atlas only
 mongodb_atlas_public_key  = "123"

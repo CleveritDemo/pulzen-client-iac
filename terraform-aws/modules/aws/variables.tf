@@ -30,12 +30,43 @@ variable "env_vars" {
 }
 
 variable "location" {
-  description = "Azure Region"
+  description = "AWS Region"
   type        = string
-  default     = "East US"
+  default     = "us-est-2"
 }
 
 variable "project_labels" {
   description = "Labels for the project"
   type        = map(string)
+}
+
+variable "vnet_cidr" {
+  description = "value for the virtual network CIDR block"
+  type        = string  
+}
+
+variable "container_subnet_cidr_a" {
+  description = "value for the subnet CIDR block"
+  type        = string
+}
+
+variable "container_subnet_cidr_b" {
+  description = "value for the subnet CIDR block"
+  type        = string
+}
+
+variable "db_subnet_cidr_a" {
+  description = "value for the subnet CIDR block"
+  type        = string
+}
+
+variable "db_subnet_cidr_b" {
+  description = "value for the subnet CIDR block"
+  type        = string
+}
+
+variable "docdb_instance_class" {
+  description = "Instance class for DocumentDB"
+  type        = string
+  default     = "db.t4g.medium"
 }

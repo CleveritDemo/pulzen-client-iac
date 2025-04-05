@@ -62,6 +62,15 @@ db_subnet_cidr: "10.0.2.0/28"
 cosmos_unique_postfix: "000001" # Unique postfix for cosmosdb name (see README.md for details)
 
 # AWS only (Optional)
+# AWS needs two subnets in different availability zones for the resource to be created
+# These will be used, not the ones provided above if AWS cloud provider is selected
+# Container Subnets (e.g., /27 = 32 IPs each, smallest usable size for ALB & Fargate)
+container_subnet_cidr_a: "10.0.0.0/27"
+container_subnet_cidr_b: "10.0.0.32/27"
+
+# DB Subnets (e.g., /28 = 16 IPs each, enough for DocumentDB)
+db_subnet_cidr_a: "10.0.0.64/28"
+db_subnet_cidr_b: "10.0.0.80/28"
 
 # MongoDB Atlas only (Optional)
 mongodb_atlas_public_key: "CHANGE_ME"
