@@ -15,4 +15,8 @@ terraform {
 
 provider "aws" {
   region = var.location
+
+  default_tags {
+    tags = var.project_labels
+  }
 }

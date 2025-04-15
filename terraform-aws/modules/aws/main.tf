@@ -137,16 +137,37 @@ resource "aws_docdb_subnet_group" "docdb_subnet_group" {
   subnet_ids = [aws_subnet.db_subnet_a.id, aws_subnet.db_subnet_b.id]
 }
 
+resource "aws_docdb_cluster_parameter_group"  "docdb_cluster_param_group" {
+  name   = "${var.app_name}-docdb-cluster-param-group"
+  family = "docdb5.0"
+
+  parameter {
+    name  = "tls"
+    value = "disabled" # tls allowed values are: disabled,enabled,tls1.2+,tls1.3+
+  }
+
+  tags = {
+    Name = "${var.app_name}-docdb-cluster-param-group"
+  }
+}
+
 resource "aws_docdb_cluster" "docdb" {
   cluster_identifier      = "${var.app_name}-cluster"
   engine                  = "docdb"
   master_username         = var.db_username
   master_password         = var.db_password
   db_subnet_group_name    = aws_docdb_subnet_group.docdb_subnet_group.name
+  backup_retention_period = 1
+  preferred_backup_window = "04:00-06:00"
   skip_final_snapshot     = true
   apply_immediately       = true
   vpc_security_group_ids  = [aws_security_group.docdb_sg.id]
-  tags                    = var.project_labels
+  port                    = 27017
+  db_cluster_parameter_group_name = aws_docdb_cluster_parameter_group.docdb_cluster_param_group.name
+  
+  tags = {
+    Name = "${var.app_name}-cluster"
+  }
 }
 
 resource "aws_docdb_cluster_instance" "docdb_instance" {
@@ -167,7 +188,7 @@ resource "aws_security_group" "docdb_sg" {
     from_port   = 27017
     to_port     = 27017
     protocol    = "tcp"
-    cidr_blocks = [var.vnet_cidr]
+    security_groups = [aws_security_group.ecs_sg.id] # Allow traffic from ECS SG
   }
 
   egress {
@@ -187,7 +208,7 @@ locals {
   app_env_vars = [
     {
       name  = "MONGODB"
-      value = "mongodb://${var.db_username}:${var.db_password}@${aws_docdb_cluster.docdb.endpoint}:27017/${var.app_name}-db?ssl=true&retryWrites=false"
+      value = "mongodb://${var.db_username}:${var.db_password}@${aws_docdb_cluster.docdb.endpoint}:27017/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
     },
     {
       name  = "SPRING_DATA_MONGODB_AUTO_INDEX_CREATION"
@@ -195,7 +216,7 @@ locals {
     },
     {
       name  = "DEBUG"
-      value = "false"
+      value = "true"
     }
   ]
 
@@ -210,7 +231,7 @@ locals {
 
 resource "aws_cloudwatch_log_group" "ecs_log_group" {
   name              = "/ecs/${var.app_name}"
-  retention_in_days = 1 # Adjust retention period as needed
+  retention_in_days = 1
 }
 
 resource "aws_ecs_task_definition" "app_task" {
@@ -218,14 +239,14 @@ resource "aws_ecs_task_definition" "app_task" {
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = "2048"
-  memory                   = "4096"
+  memory                   = 8192
 
   container_definitions = jsonencode([
     {
       name      = var.app_name
       image     = var.container_image
       cpu       = 2048
-      memory    = 4096
+      memory    = 8192
       essential = true
       portMappings = [
         {
@@ -267,6 +288,11 @@ resource "aws_iam_role" "ecs_task_execution_role" {
   })
 }
 
+resource "aws_iam_role_policy_attachment" "cloudwatch_logs" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+}
+
 resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
@@ -287,6 +313,16 @@ resource "aws_lb_target_group" "app_tg" {
   protocol = "HTTP"
   vpc_id   = aws_vpc.main.id
   target_type = "ip"
+
+  health_check {
+    path                = "/"
+    protocol            = "HTTP"
+    matcher             = "200-399"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
 }
 
 resource "aws_lb_listener" "app_listener" {
@@ -309,7 +345,7 @@ resource "aws_ecs_service" "app_service" {
 
   network_configuration {
     subnets = [aws_subnet.container_subnet_a.id, aws_subnet.container_subnet_b.id]
-    security_groups = [aws_security_group.ecs_sg.id]
+    security_groups  = [aws_security_group.ecs_sg.id] 
     assign_public_ip = true
   }
 
