@@ -1,0 +1,78 @@
+# terraform/ansiblefeeded.tfvars
+cloud_provider = "azure"
+
+app_name        = "pulzen-gateway-client-runner"
+container_image = "pulzen/gateway:latest"
+location        = "westus"
+
+# Database
+db_username = "pulzenworkeruser"
+db_password = "123"
+db_url      = ""
+db_engine   = "cosmosdb"
+
+env_vars = {
+  AUTH_BASIC_PASSWORD = "123"
+  AUTH_BASIC_USERNAME = "123"
+  LICENSE_API_APP_KEY = "your-pulzen-key"
+  PROFILES_DEFAULT    = "mongo,gitlab,github,ado"
+
+  COPILOT_ENTERPRISE    = "CHANGE_ME"
+  COPILOT_ORGANIZATION  = "CHANGE_ME"
+  COPILOT_TOKEN         = "Bearer PUT-YOUR-TOKEN-HERE"
+  COPILOT_METRICS_LEVEL = "enterprise|organization"
+  GITHUB_TOKEN          = "Bearer PUT-YOUR-TOKEN-HERE"
+
+  GITHUB_WEBHOOK_SECRET = "CHANGE_ME"
+  GITHUB_ORGANIZATION   = "CHANGE_ME"
+  GITHUB_ENTERPRISE     = "CHANGE_ME"
+
+  GITLAB_CLIENT_AUTHORIZATION = "Bearer PUT-YOUR-TOKEN-HERE"
+
+  JIRA_URL           = "https://your-jira-instance"
+  JIRA_TOKEN         = "PUT-YOUR-TOKEN-HERE"
+  JIRA_USER          = "YOUR-JIRA-USER"
+  JIRA_CLIENT_ID     = "YOUR-JIRA-CLIENT-ID"
+  JIRA_CLIENT_SECRET = "YOUR-JIRA-CLIENT-SECRET"
+  JIRA_CLIENT_CODE   = "PUT-YOUR-TOKEN-HERE"
+
+  BITBUCKET_WORKSPACE     = "MY-WORKSPACE"
+  BITBUCKET_CLIENT_ID     = "PUT-YOUR"
+  BITBUCKET_CLIENT_SECRET = "PUT-YOUR-TOKEN-HERE"
+
+  AZURE_DEVOPS_TOKEN        = "PUT-YOUR-TOKEN-HERE"
+  AZURE_DEVOPS_ORGANIZATION = "MY-ORGANIZATION"
+}
+
+# Labels for the project, used for cost tracking
+project_labels = {
+  "provider"    = "pulzen"
+  "cost_center" = "better_future_area"
+  "environment" = "production"
+}
+
+# Networking
+vnet_cidr             = "10.0.0.0/22"
+container_subnet_cidr = "10.0.0.0/23"
+db_subnet_cidr        = "10.0.2.0/28"
+
+# GCP only
+project_id = ""
+
+# Azure only
+azure_subscription_id = "123-123-123-123-123"
+cosmos_unique_postfix = "000001"
+
+# AWS only
+# AWS needs two subnets in different availability zones for the resource to be created
+# These will be used, not the ones provided above if AWS cloud provider is selected
+# Container Subnets (e.g., /27 = 32 IPs each, smallest usable size for ALB & Fargate)
+container_subnet_cidr_a = "10.0.0.0/27"
+container_subnet_cidr_b = "10.0.0.32/27"
+
+# MongoDB Atlas only
+mongodb_atlas_public_key  = "123"
+mongodb_atlas_private_key = "123-123-123-123-123"
+mongodb_atlas_org_id      = "123"
+mongodb_databse_tier      = "M10"
+mongodb_region            = "EASTERN_US"
