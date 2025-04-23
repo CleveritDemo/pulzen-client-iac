@@ -8,19 +8,8 @@ variable "container_image" {
   type        = string
 }
 
-variable "db_engine" {
-  description = "Databse Engine"
-  default    = "cosmosdb"
-  type        = string
-}
-
-variable "db_username" {
-  description = "Database Username"
-  type        = string
-}
-
-variable "db_password" {
-  description = "Database Password"
+variable "db_url" {
+  description = "Database connection string"
   type        = string
 }
 
@@ -30,7 +19,7 @@ variable "env_vars" {
 }
 
 variable "location" {
-  description = "Azure Region"
+  description = "AWS Region"
   type        = string
   default     = "East US"
 }
@@ -38,4 +27,15 @@ variable "location" {
 variable "project_labels" {
   description = "Labels for the project"
   type        = map(string)
+}
+
+variable "vnet_cidr" {
+  description = "value for the virtual network CIDR block"
+  type        = string
+}
+
+variable "container_subnet_cidr" {
+  description = "value for the subnet CIDR block"
+  type        = string
+  default = "10.0.0.0/23"
 }

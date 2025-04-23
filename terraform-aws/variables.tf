@@ -13,25 +13,9 @@ variable "container_image" {
   type        = string
 }
 
-variable "db_engine" {
-  description = "Database Engine"
+variable "db_url" {
+  description = "Database connection string"
   type        = string
-}
-
-variable "db_username" {
-  description = "Database Username"
-  type        = string
-}
-
-variable "db_password" {
-  description = "Database Password"
-  type        = string
-}
-
-variable "location" {
-  description = "Azure Region/Google Cloud Region/AWS Region"
-  type        = string
-  default     = "East US"
 }
 
 variable "env_vars" {
@@ -39,7 +23,24 @@ variable "env_vars" {
   type        = map(string)
 }
 
+variable "location" {
+  description = "AWS Region"
+  type        = string
+  default     = "East US"
+}
+
 variable "project_labels" {
   description = "Labels for the project"
   type        = map(string)
+}
+
+variable "vnet_cidr" {
+  description = "value for the virtual network CIDR block"
+  type        = string
+}
+
+variable "container_subnet_cidr" {
+  description = "value for the subnet CIDR block"
+  type        = string
+  default = "10.0.0.0/23"
 }

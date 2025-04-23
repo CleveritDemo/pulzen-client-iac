@@ -1,19 +1,18 @@
 # VPC
 resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/20"
+  cidr_block = "${var.vnet_cidr}"
+}
+
+# Fetch available availability zones
+data "aws_availability_zones" "available" {
+  state = "available"
 }
 
 resource "aws_subnet" "public_subnet" {
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.0.0/24"
-  availability_zone       = "${var.location}a"
+  cidr_block              = "${var.container_subnet_cidr}"
+  availability_zone       = data.aws_availability_zones.available.names[0]
   map_public_ip_on_launch = true
-}
-
-resource "aws_subnet" "private_subnet" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = "${var.location}a"
 }
 
 resource "aws_internet_gateway" "igw" {
@@ -32,30 +31,6 @@ resource "aws_route_table" "public_rt" {
 resource "aws_route_table_association" "public_assoc" {
   subnet_id      = aws_subnet.public_subnet.id
   route_table_id = aws_route_table.public_rt.id
-}
-
-# DocumentDB Cluster
-resource "aws_docdb_subnet_group" "docdb_subnet" {
-  name       = "docdb-subnet-group"
-  subnet_ids = [aws_subnet.private_subnet.id]
-}
-
-resource "aws_docdb_cluster" "mongo" {
-  cluster_identifier = "docdb-${var.app_name}"
-  master_username    = var.db_username
-  master_password    = var.db_password
-  engine             = "docdb"
-  skip_final_snapshot = true
-  db_subnet_group_name = aws_docdb_subnet_group.docdb_subnet.name
-
-  tags = var.project_labels
-}
-
-resource "aws_docdb_cluster_instance" "mongo_instance" {
-  count              = 1
-  identifier         = "docdb-${var.app_name}-instance"
-  cluster_identifier = aws_docdb_cluster.mongo.id
-  instance_class     = "db.r5.large"
 }
 
 # ECS Cluster
@@ -84,6 +59,22 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+resource "aws_lb_target_group" "app_tg" {
+  name     = "${var.app_name}-tg"
+  port     = 8080
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.main.id
+
+  health_check {
+    path                = "/actuator/health"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 3
+    unhealthy_threshold = 2
+    matcher             = "200-399"
+  }
+}
+
 # ECS Task Definition
 resource "aws_ecs_task_definition" "app" {
   family                   = "${var.app_name}-task"
@@ -103,7 +94,6 @@ resource "aws_ecs_task_definition" "app" {
       portMappings = [
         {
           containerPort = 8080
-          hostPort      = 8080
         }
       ]
       environment = concat([
@@ -114,8 +104,8 @@ resource "aws_ecs_task_definition" "app" {
         }
       ], [
         {
-          name  = "MONGODB_URI"
-          value = "mongodb://${var.db_username}:${var.db_password}@${aws_docdb_cluster.mongo.endpoint}:27017/?ssl=true&retryWrites=false"
+          name  = "MONGODB"
+          value = "${var.db_url}" # MongoDB Atlas connection string
         },
         {
           name = "SPRING_DATA_MONGODB_AUTO_INDEX_CREATION"
@@ -138,6 +128,10 @@ resource "aws_ecs_service" "app" {
   desired_count   = 1
   launch_type     = "FARGATE"
 
+  deployment_controller {
+    type = "ECS"
+  }
+
   network_configuration {
     subnets          = [aws_subnet.public_subnet.id]
     security_groups  = [aws_security_group.ecs_sg.id]
@@ -148,6 +142,29 @@ resource "aws_ecs_service" "app" {
     target_group_arn = aws_lb_target_group.app_tg.arn
     container_name   = "${var.app_name}"
     container_port   = 8080
+  }
+
+  depends_on = [aws_lb_listener.app_listener]
+}
+
+
+# Security group for Load Balancer
+resource "aws_security_group" "lb_sg" {
+  name   = "${var.app_name}-lb-sg"
+  vpc_id = aws_vpc.main.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
@@ -160,7 +177,7 @@ resource "aws_security_group" "ecs_sg" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.lb_sg.id]
   }
 
   egress {
@@ -176,14 +193,7 @@ resource "aws_lb" "app_alb" {
   name               = "${var.app_name}-alb"
   load_balancer_type = "application"
   subnets            = [aws_subnet.public_subnet.id]
-  security_groups    = [aws_security_group.ecs_sg.id]
-}
-
-resource "aws_lb_target_group" "app_tg" {
-  name     = "${var.app_name}-tg"
-  port     = 8080
-  protocol = "HTTP"
-  vpc_id   = aws_vpc.main.id
+  security_groups    = [aws_security_group.lb_sg.id]
 }
 
 resource "aws_lb_listener" "app_listener" {
