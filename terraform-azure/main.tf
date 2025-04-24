@@ -1,6 +1,6 @@
 module "azure" {
   source = "./modules/azure"
-  count  = var.cloud_provider == "azure" ? 1 : 0
+  count  = var.db_engine == "cosmosdb" ? 1 : 0
 
   providers = {
     azurerm       = azurerm
@@ -29,4 +29,31 @@ module "azure" {
   vnet_cidr = var.vnet_cidr
   container_subnet_cidr = var.container_subnet_cidr
   db_subnet_cidr = var.db_subnet_cidr
+}
+
+module "azure-mongoatlas-connectionstring" {
+  source = "./modules/azure-mongoatlas-connectionstring"
+  count  = var.db_engine == "mongodbatlasconnectionstring" ? 1 : 0
+
+  providers = {
+    azurerm       = azurerm
+    random        = random
+  }
+
+  # Application
+  app_name        = var.app_name
+  container_image = var.container_image
+  env_vars        = var.env_vars
+  
+  # Azure
+  resource_group  = "${var.app_name}-rg"
+  location        = var.location
+  project_labels  = var.project_labels
+
+  # Database
+  db_url = var.db_url
+
+  # Networking
+  vnet_cidr = var.vnet_cidr
+  container_subnet_cidr = var.container_subnet_cidr
 }
