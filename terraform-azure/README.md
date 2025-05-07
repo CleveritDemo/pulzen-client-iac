@@ -6,13 +6,13 @@ Client side script to provision the Pulsen client resources necesaary on the cli
 
 - GCP:
   - Working with GCP + Atlas: DONE
-  - GCP + manual mongodb dtring: inProgress
+  - GCP + manual mongodb string: inProgress
 - Azure:
   - Working with Azure + CosmosDB for Mongo: DONE
-  - Azure + manual mongodb dtring: DONE
+  - Azure + manual mongodb string: DONE
 - AWS:
   - Working with AWS + Atlas : pending
-  - AWS + manual mongodb dtring: pending
+  - AWS + manual mongodb string: pending
 
 ## Prerequisites
 
