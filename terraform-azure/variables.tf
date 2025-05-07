@@ -29,7 +29,7 @@ variable "cosmos_unique_postfix" {
 }
 
 variable "db_url" {
-  description = "Database URL"
+  description = "Database URL (connection sting)"
   type        = string
 }
 

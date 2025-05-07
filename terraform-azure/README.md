@@ -5,14 +5,14 @@ Client side script to provision the Pulsen client resources necesaary on the cli
 ## STATUS: **WIP**
 
 - GCP:
-  - Working with GCP + Atlas
-  - GCP + manual mongodb dtring: inProgress
+  - Working with GCP + Atlas: DONE
+  - GCP + manual mongodb string: inProgress
 - Azure:
-  - Working with Azure + Atlas : pending
-  - Azure + manual mongodb dtring: pending
+  - Working with Azure + CosmosDB for Mongo: DONE
+  - Azure + manual mongodb string: DONE
 - AWS:
   - Working with AWS + Atlas : pending
-  - AWS + manual mongodb dtring: pending
+  - AWS + manual mongodb string: pending
 
 ## Prerequisites
 
@@ -71,4 +71,22 @@ terraform apply tfplan
 ```bash
 # Destroy the resources
 terraform destroy -var-file=ansiblefeeded.tfvars
+```
+
+```bash
+# Banco estado
+terraform plan -var-file=bancoestado.tfvars -out=tfplan
+terraform apply tfplan
+terraform destroy -var-file=bancoestado.tfvars
+
+# Banco Chile
+terraform plan -var-file=bancochile.tfvars -out=tfplan
+terraform apply tfplan
+terraform destroy -var-file=bancochile.tfvars
+
+# Lirmi GITHUB_WEBHOOK_SECRET = "<YOUR_GITHUB_WEBHOOK_SECRET>"
+# Note: Replace <YOUR_GITHUB_WEBHOOK_SECRET> with your actual secret. Do not hard-code secrets in the codebase.
+terraform plan -var-file=lirmi.tfvars -out=tfplan
+terraform apply tfplan
+terraform destroy -var-file=lirmi.tfvars
 ```

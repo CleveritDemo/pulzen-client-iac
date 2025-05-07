@@ -9,7 +9,7 @@ location        = "westus"
 db_username = "pulzenworkeruser"
 db_password = "123"
 db_url      = ""
-db_engine   = "cosmosdb"
+db_engine   = "mongodbatlasconnectionstring" # "cosmosdb" or "mongodbatlas" or "mongodbatlasconnectionstring"
 
 env_vars = {
   AUTH_BASIC_PASSWORD = "123"
