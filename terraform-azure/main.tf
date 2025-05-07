@@ -50,9 +50,6 @@ module "azure-mongoatlas-connectionstring" {
   location        = var.location
   project_labels  = var.project_labels
 
-  # Database
-  db_url = var.db_url
-
   # Networking
   vnet_cidr = var.vnet_cidr
   container_subnet_cidr = var.container_subnet_cidr

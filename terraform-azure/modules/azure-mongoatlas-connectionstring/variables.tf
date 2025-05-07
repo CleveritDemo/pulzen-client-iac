@@ -8,11 +8,6 @@ variable "container_image" {
   type        = string
 }
 
-variable "db_url" {
-  description = "Database URL"
-  type        = string
-}
-
 variable "env_vars" {
   description = "Environment variables for the application"
   type        = map(string)
