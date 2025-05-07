@@ -34,12 +34,6 @@ resource "azurerm_container_app" "app" {
   container_app_environment_id = azurerm_container_app_environment.env.id
   revision_mode              = "Single"
 
-  # Predefined secrets
-  secret {
-    name  = "mongodb-connection"
-    value = "${var.db_url}"
-  }
-
   # Dynamically create secrets from var.env_vars
   dynamic "secret" {
     for_each = var.env_vars
@@ -57,11 +51,6 @@ resource "azurerm_container_app" "app" {
       memory = "4Gi"
 
       # Add environment variables from tfvars
-      env {
-        name  = "MONGODB"
-        secret_name = "mongodb-connection"
-      }
-
       env {
         name = "SPRING_DATA_MONGODB_AUTO_INDEX_CREATION"
         value = "true"
