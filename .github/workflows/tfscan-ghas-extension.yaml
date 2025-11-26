@@ -26,6 +26,7 @@ jobs:
           working_directory: '.'
           format: sarif
           soft_fail: true
+          additional_args: --out results.sarif
       
       - name: Upload TFSec results to GitHub
         if: always()
